@@ -1,3 +1,5 @@
+// src/App.js
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Importa los componentes de React Router DOM
 import Header from './components/Header/Header';
@@ -5,6 +7,7 @@ import HomePage from './pages/HomePage';
 import CartPage from './pages/CartPage'; // Importa tu componente CartPage
 import Footer from "./components/Footer/Footer";
 import { CartProvider } from './components/Cart/CartProvider'; // Asegúrate de importar tu CartProvider
+import LoginPage from './pages/LoginPage'; // <-- ¡Importa tu LoginPage!
 import './App.css';
 
 function App() {
@@ -24,9 +27,11 @@ function App() {
                             {/* Route para la página del carrito */}
                             <Route path="/cart" element={<CartPage />} />
 
+                            {/* Route para la página de inicio de sesión */}
+                            <Route path="/login" element={<LoginPage />} /> {/* <-- ¡Nueva ruta para LoginPage! */}
+
                             {/* Puedes añadir más rutas aquí para otras páginas, por ejemplo: */}
                             {/* <Route path="/productos" element={<ProductListPage />} /> */}
-                            {/* <Route path="/login" element={<LoginPage />} /> */}
                             {/* <Route path="/sucursales" element={<BranchesPage />} /> */}
 
                             {/* Opcional: Ruta para manejar páginas no encontradas (404) */}

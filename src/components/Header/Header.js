@@ -2,7 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Importa Link de react-router-dom
 import { useCart } from '../Cart/CartProvider'; // Importa tu hook useCart
-import './Header.css';
+
+import './Header.css'; // Asegúrate de que esta ruta sea correcta para tu Header.css
 import logo from '../../assets/ferremax-logo.png';
 
 function Header() {
@@ -26,7 +27,12 @@ function Header() {
                 <nav className="main-nav">
                     <ul>
                         <li><button className="nav-button">Sucursales</button></li>
-                        <li><button className="nav-button">Iniciar Sesión</button></li>
+                        <li>
+                            {/* Cambiado a Link para navegar a la página de inicio de sesión */}
+                            <Link to="/login" className="nav-button">
+                                Iniciar Sesión
+                            </Link>
+                        </li>
                         <li>
                             {/* Usa el componente Link para navegar al carrito */}
                             <Link to="/cart" className="nav-button cart-button">

@@ -12,7 +12,7 @@
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
-    align-items: center; /* Asegura que todos los elementos hijos se centren verticalmente */
+    align-items: center;
     padding: 0 20px;
 }
 
@@ -24,7 +24,7 @@
 .logo-section .logo {
     height: 50px; /* Ajusta el tamaño del logo */
     width: auto;
-    /* margin-right: 15px; Removido, el gap de header-top manejará el espaciado si es necesario */
+    margin-right: 15px;
 }
 
 /* Barra de búsqueda */
@@ -32,8 +32,6 @@
     display: flex;
     flex-grow: 1; /* Permite que la barra de búsqueda ocupe el espacio disponible */
     margin: 0 30px; /* Espacio entre el logo y los botones */
-    /* Añadir align-self para asegurar que se centre si hay un desajuste */
-    align-self: center;
 }
 
 .search-bar input {
@@ -66,17 +64,17 @@
     margin: 0;
     padding: 0;
     display: flex;
-    align-items: center; /* ¡IMPORTANTE! Asegura que los ítems de la lista se centren verticalmente */
 }
 
 .main-nav ul li {
     margin-left: 15px; /* Espacio entre los botones */
-    /* display: flex; /* Asegura que cada li sea un contenedor flex para su contenido si es necesario */
-    /* align-items: center; */
 }
 
-.nav-button {
-    /* Mantiene tus estilos de color y tipografía */
+/* Estilos para el botón y el LINK que usa la clase nav-button */
+.nav-button,
+.nav-button:link, /* Para enlaces no visitados */
+.nav-button:visited /* Para enlaces visitados */
+{
     background-color: #61dafb; /* Un azul claro/celeste para los botones */
     color: #282c34; /* Texto oscuro para contraste */
     padding: 10px 15px;
@@ -87,93 +85,42 @@
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     white-space: nowrap; /* Evita que el texto del botón se rompa */
-
-    /* ¡IMPORTANTE PARA LA ALINEACIÓN! */
-    display: flex; /* Asegura que el Link se comporte como un flex container */
-    align-items: center; /* Centra verticalmente el contenido dentro del Link/botón */
-    justify-content: center; /* Opcional: Centra horizontalmente el contenido */
-    height: 40px; /* Dale una altura fija para que todos los botones tengan la misma altura */
-    box-sizing: border-box; /* Asegura que el padding se incluya en la altura total */
+    text-decoration: none; /* <-- ¡Importante: Quita el subrayado predeterminado de los enlaces! */
+    display: inline-block; /* <-- ¡Importante: Asegura que padding y dimensiones se apliquen correctamente! */
+    box-sizing: border-box; /* Para que padding no añada ancho/alto extra */
 }
 
 .nav-button:hover {
     background-color: #21a1f1;
     transform: translateY(-2px);
+    text-decoration: none; /* Asegura que no aparezca subrayado al pasar el ratón */
 }
 
 .cart-button {
     background-color: #e67e22; /* Naranja para el carrito */
     color: white;
-    padding: 10px 20px; /* Ajusta el padding para que sea visualmente similar a los demás */
-    position: relative; /* Necesario para posicionar el contador */
-    /* Alineación específica si los padding no coinciden: */
-    /* align-self: center; */
+    padding: 10px 20px;
 }
 
 .cart-button:hover {
     background-color: #d35400;
 }
 
-/* Estilos para el contador del carrito */
-.cart-item-count {
-    position: absolute;
-    top: -8px; /* Ajusta la posición para que esté más arriba */
-    right: -8px; /* Ajusta la posición para que esté más a la derecha */
-    background-color: #dc3545; /* Color rojo para el contador */
-    color: white;
-    font-size: 0.7rem; /* Un poco más pequeño */
-    font-weight: bold;
-    border-radius: 50%;
-    padding: 3px 6px; /* Ajusta el padding para un círculo más compacto */
-    min-width: 18px; /* Asegura que siempre tenga un ancho mínimo */
-    text-align: center;
-    line-height: 1.2; /* Alinea el texto verticalmente */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    /* Asegura que no se desborde el contenido */
-    overflow: hidden;
-    display: flex; /* Para centrar el número perfectamente */
-    align-items: center;
-    justify-content: center;
-    height: 18px; /* Haz que la altura sea igual al min-width para un círculo perfecto */
-}
-
-
 /*Responsive adjustments */
 @media (max-width: 768px) {
     .header-top {
         flex-wrap: wrap;
         justify-content: center;
-        padding: 10px; /* Reduce padding para móviles */
     }
     .logo-section, .search-bar, .main-nav {
-        flex-basis: 100%; /* Ocupan todo el ancho */
-        margin-bottom: 15px; /* Espacio entre secciones */
-        margin-left: 0; /* Reinicia margin-left */
-        margin-right: 0; /* Reinicia margin-right */
-        justify-content: center; /* Centra el contenido si es flex */
-    }
-    .logo-section {
-        margin-bottom: 10px; /* Espacio debajo del logo */
+        flex-basis: 100%; /* Ocupan t odo el ancho */
+        margin-bottom: 15px;
+        justify-content: center;
     }
     .search-bar {
         order: 1; /* Mover la barra de búsqueda arriba */
-        margin-bottom: 20px; /* Más espacio para la barra de búsqueda */
     }
     .main-nav ul {
-        flex-direction: column; /* Apila los botones de navegación */
-        gap: 10px; /* Espacio entre los botones apilados */
-        width: 100%; /* Asegura que la lista ocupe todo el ancho */
-    }
-    .main-nav ul li {
-        margin-left: 0; /* Elimina el margen izquierdo en móvil */
-        width: 100%; /* Hace que cada botón ocupe el ancho completo */
-        text-align: center; /* Centra el texto dentro del li */
-    }
-    .nav-button {
-        width: 100%; /* Ocupa todo el ancho en móviles */
-        justify-content: center; /* Centra el texto/contenido del botón */
-    }
-    .cart-button {
-        padding: 10px 15px; /* Ajusta el padding en móvil */
+        justify-content: center;
     }
 }
