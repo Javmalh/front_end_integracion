@@ -1,5 +1,5 @@
 import React from 'react';
-import ProductSlider from '../components/ProductSlider'; // Importa el slider
+import ProductSlider from '../components/ProductSlider/ProductSlider'; // Importa el slider
 import './HomePage.css';
 
 function HomePage() {

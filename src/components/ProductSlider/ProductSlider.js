@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './ProductSlider.css';
-import sliderImage1 from '../assets/slider-img-1.jpg';
-import sliderImage2 from '../assets/slider-img-2.jpg';
-import sliderImage3 from '../assets/slider-img-3.jpg';
+import sliderImage1 from '../../assets/slider-img-1.jpg';
+import sliderImage2 from '../../assets/slider-img-2.jpg';
+import sliderImage3 from '../../assets/slider-img-3.jpg';
 
 const images = [
     { id: 1, src: sliderImage1, alt: 'Oferta Taladros', title: 'Grandes Ofertas en Taladros' },

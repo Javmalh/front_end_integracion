@@ -1,0 +1,83 @@
+/* src/components/CartItem.css */
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    margin-right: 15px;
+    border-radius: 5px;
+}
+
+.cart-item-details {
+    flex-grow: 1;
+}
+
+.cart-item-name {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    color: #34495e;
+}
+
+.cart-item-price, .cart-item-subtotal {
+    margin: 0 0 5px 0;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.cart-item-quantity-control {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.cart-item-quantity-control button {
+    background-color: #6c757d; /* Gris de Bootstrap */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 0 5px;
+}
+
+.cart-item-quantity-control button:hover {
+    background-color: #5a6268;
+}
+
+.cart-item-quantity-input {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+    -moz-appearance: textfield; /* Para ocultar flechas en Firefox */
+}
+/* Para ocultar flechas en Chrome, Safari, Edge */
+.cart-item-quantity-input::-webkit-outer-spin-button,
+.cart-item-quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.cart-item-remove {
+    background-color: #f44336; /* Rojo */
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.cart-item-remove:hover {
+    background-color: #d32f2f;
+}
