@@ -8,6 +8,7 @@ import CartPage from './pages/CartPage'; // Importa tu componente CartPage
 import Footer from "./components/Footer/Footer";
 import { CartProvider } from './components/Cart/CartProvider'; // Asegúrate de importar tu CartProvider
 import LoginPage from './pages/LoginPage'; // <-- ¡Importa tu LoginPage!
+import RegisterPage from './pages/RegisterPage'; // <-- ¡Importa RegisterPage!
 import './App.css';
 
 function App() {
@@ -28,7 +29,10 @@ function App() {
                             <Route path="/cart" element={<CartPage />} />
 
                             {/* Route para la página de inicio de sesión */}
-                            <Route path="/login" element={<LoginPage />} /> {/* <-- ¡Nueva ruta para LoginPage! */}
+                            <Route path="/login" element={<LoginPage />} />
+
+                            {/* Route para la página de registro */}
+                            <Route path="/register" element={<RegisterPage />} /> {/* <-- ¡Nueva ruta para RegisterPage! */}
 
                             {/* Puedes añadir más rutas aquí para otras páginas, por ejemplo: */}
                             {/* <Route path="/productos" element={<ProductListPage />} /> */}
@@ -43,6 +47,7 @@ function App() {
             </Router>
         </CartProvider>
     );
+
 }
 
 export default App;
