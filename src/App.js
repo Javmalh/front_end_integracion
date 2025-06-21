@@ -1,90 +1,103 @@
 // src/App.js
 
-import React, { useState } from 'react'; // Importa useState para gestionar el estado de login
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'; // Importa useNavigate para la redirección
-import Header from './components/Header/Header';
-import HomePage from './pages/HomePage';
+import React, { useState, useEffect } from 'react'; // Importa useState y useEffect para gestionar el estado de login y efectos secundarios
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'; // Importa useNavigate para la redirección programática
+import Header from './components/Header/Header'; // Importa el componente Header
+import HomePage from './pages/HomePage'; // Importa tu componente HomePage
 import CartPage from './pages/CartPage'; // Importa tu componente CartPage
-import Footer from "./components/Footer/Footer";
+import Footer from "./components/Footer/Footer"; // Importa tu componente Footer
 import { CartProvider } from './components/Cart/CartProvider'; // Asegúrate de importar tu CartProvider
 import LoginPage from './pages/LoginPage'; // Importa tu LoginPage
 import RegisterPage from './pages/RegisterPage'; // Importa RegisterPage
-import UserProfilePage from './pages/UserProfilePage'; // <-- ¡Importa tu UserProfilePage!
-import Sucursales from "./pages/Sucursales";
-import './App.css';
+import UserProfilePage from './pages/UserProfilePage'; // Importa tu UserProfilePage
+import Sucursales from "./pages/Sucursales"; // Importa tu componente Sucursales
+import './App.css'; // Importa tu CSS global para App
 
 function App() {
-    // Estado para simular si el usuario está logeado y su nombre
+    // Estado para simular si el usuario está logeado, su nombre y el token de acceso
     // En una aplicación real, este estado se gestionaría de forma más robusta (ej. con Context API, Redux, Zustand)
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userName, setUserName] = useState('John Doe'); // Nombre de usuario de ejemplo
+    const [userName, setUserName] = useState(''); // Inicializado vacío, se llena al logearse
+    const [accessToken, setAccessToken] = useState(''); // Estado para almacenar el token JWT
 
-    // Función para simular el inicio de sesión
-    const handleLogin = (email, password) => {
-        // Aquí iría tu lógica real de autenticación con el backend.
-        // Por ahora, es un ejemplo simple con credenciales fijas.
-        console.log(`Simulando login con email: ${email} y password: ${password}`);
-        if (email === 'test@example.com' && password === 'password') { // Credenciales de ejemplo
-            setIsLoggedIn(true);
-            setUserName('Juan Pérez'); // Asigna un nombre de usuario de ejemplo al logearse
-            alert('¡Inicio de sesión exitoso!');
-            return true; // Indica que el login fue exitoso
-        } else {
-            alert('Credenciales incorrectas. Por favor, intenta de nuevo.');
-            return false; // Indica que el login falló
-        }
+    // Función para manejar el inicio de sesión exitoso
+    // Recibe el token y el nombre de usuario del LoginPage después de la llamada al backend
+    const handleLogin = (token, name) => {
+        setIsLoggedIn(true);
+        setAccessToken(token); // Guarda el token en el estado
+        setUserName(name); // Guarda el nombre de usuario en el estado
+        // Opcional pero recomendado: Guarda el token y nombre en localStorage para persistencia
+        // Esto permite que el usuario permanezca logeado incluso después de cerrar el navegador
+        localStorage.setItem('jwtToken', token);
+        localStorage.setItem('userName', name);
     };
 
-    // Función para simular el cierre de sesión
+    // Función para cerrar sesión
     const handleLogout = () => {
         setIsLoggedIn(false);
         setUserName('');
-        alert('¡Has cerrado sesión!');
-        // Podrías redirigir al usuario a la página de inicio o login aquí si lo deseas
-        // Nota: Si usas `navigate` aquí, necesitarías que `handleLogout` fuera un hook o que `App` tuviera acceso a `useNavigate`
+        setAccessToken('');
+        // Limpia el token y el nombre de usuario del almacenamiento local al cerrar sesión
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('userName');
+        alert('¡Has cerrado sesión!'); // Notifica al usuario
+        // Nota: La redirección a /login después del logout puede ser manejada por el Header
+        // o por el componente UserProfilePage, o podrías forzarla aquí si lo deseas.
     };
+
+    // Efecto para verificar el estado de login al cargar la aplicación
+    // Intenta recuperar el token y el nombre de usuario del localStorage
+    useEffect(() => {
+        const storedToken = localStorage.getItem('jwtToken');
+        const storedUserName = localStorage.getItem('userName');
+        if (storedToken && storedUserName) {
+            setIsLoggedIn(true);
+            setAccessToken(storedToken);
+            setUserName(storedUserName);
+        }
+    }, []); // El array vacío de dependencias asegura que este efecto se ejecute solo una vez al montar el componente
 
     return (
         // Envuelve toda tu aplicación con CartProvider para que el contexto esté disponible globalmente
         <CartProvider>
-            {/* BrowserRouter (o Router) envuelve toda la aplicación para habilitar el enrutamiento */}
+            {/* BrowserRouter (o Router) envuelve toda la aplicación para habilitar el enrutamiento basado en URL */}
             <Router>
                 <div className="App">
                     {/* El Header se mostrará en todas las rutas.
-                        Le pasamos el estado de login y la función de logout. */}
+                        Le pasamos el estado de login (isLoggedIn, userName) y la función de logout. */}
                     <Header isLoggedIn={isLoggedIn} userName={userName} onLogout={handleLogout} />
                     <main>
-                        {/* Routes define los diferentes caminos de tu aplicación */}
+                        {/* Routes define los diferentes caminos de tu aplicación y qué componente renderizar para cada uno */}
                         <Routes>
-                            {/* Route para la página de inicio (ruta raíz) */}
+                            {/* Ruta para la página de inicio (ruta raíz) */}
                             <Route path="/" element={<HomePage />} />
 
-                            {/* Route para la página del carrito */}
+                            {/* Ruta para la página del carrito */}
                             <Route path="/cart" element={<CartPage />} />
 
-                            {/* Route para la página de inicio de sesión.
-                                Le pasamos la función de login. */}
+                            {/* Ruta para la página de inicio de sesión.
+                                Le pasamos la función `handleLogin` para que pueda actualizar el estado de la app. */}
                             <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
 
-                            {/* Route para la página de registro */}
+                            {/* Ruta para la página de registro */}
                             <Route path="/register" element={<RegisterPage />} />
 
-                            {/* Route para la página de sucursales */}
+                            {/* Ruta para la página de sucursales */}
                             <Route path="/sucursales" element={<Sucursales />} />
 
                             {/* Ruta para la página del perfil del usuario.
                                 Renderiza UserProfilePage solo si isLoggedIn es true.
-                                Si no está logeado, redirige a LoginPage. */}
+                                Si no está logeado, redirige a LoginPage para forzar el inicio de sesión. */}
                             {isLoggedIn ? (
                                 <Route path="/profile" element={<UserProfilePage userName={userName} />} />
                             ) : (
                                 <Route path="/profile" element={<LoginPage onLogin={handleLogin} />} />
                             )}
 
-                            {/* Puedes añadir más rutas aquí para otras páginas */}
+                            {/* Puedes añadir más rutas aquí para otras páginas de tu aplicación */}
                             {/* <Route path="/productos" element={<ProductListPage />} /> */}
 
-                            {/* Opcional: Ruta para manejar páginas no encontradas (404) */}
+                            {/* Ruta comodín para manejar páginas no encontradas (404) */}
                             <Route path="*" element={<h2>404: Página no encontrada</h2>} />
                         </Routes>
                     </main>

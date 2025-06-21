@@ -1,39 +1,60 @@
 // src/pages/LoginPage.js
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate para la navegación programática
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // <-- ¡Importa axios!
 import './LoginPage.css';
 
-// El componente LoginPage ahora recibe la prop onLogin
+// El componente LoginPage ahora recibirá la prop onLogin
 function LoginPage({ onLogin }) {
-    // Estados para almacenar el valor del email y la contraseña
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate(); // Hook para obtener la función de navegación
+    const [errorMessage, setErrorMessage] = useState(''); // Estado para mensajes de error al usuario
+    const navigate = useNavigate();
 
-    // Función que se ejecuta cuando se envía el formulario
-    const handleSubmit = (e) => {
-        e.preventDefault(); // Evita que la página se recargue al enviar el formulario
-        console.log('Intentando iniciar sesión con:');
-        console.log('Email:', email);
-        console.log('Contraseña:', password);
+    const handleSubmit = async (e) => { // <-- ¡Añade 'async' aquí!
+        e.preventDefault();
+        setErrorMessage(''); // Limpia cualquier mensaje de error anterior
 
-        // Llama a la función onLogin pasada desde App.js
-        // Esta función manejará la lógica de autenticación real (simulada aquí)
-        // y retornará true si es exitosa, false si falla.
-        const loginSuccessful = onLogin(email, password);
+        try {
+            console.log('Intentando iniciar sesión con:', { email, password });
 
-        if (loginSuccessful) {
-            // Si el login fue exitoso, redirige al usuario a la página de perfil
-            navigate('/profile');
-        } else {
-            // Si el login falló, la alerta ya es manejada por onLogin en App.js
-            // Puedes añadir lógica adicional aquí si es necesario (ej. limpiar campos)
+            // Realiza la llamada HTTP POST al backend
+            const response = await axios.post('http://localhost:8080/api/auth/login', {
+                email,
+                password
+            });
+
+            console.log('Respuesta completa del login desde el backend:', response);
+
+            // Verifica si la respuesta contiene el token de acceso
+            if (response.data && response.data.accessToken) {
+                const accessToken = response.data.accessToken;
+                const userName = response.data.username || email; // Usa el nombre de usuario del backend o el email
+
+                // Llama a la función onLogin pasada desde App.js, pasándole el token y el nombre
+                onLogin(accessToken, userName);
+
+                alert('¡Inicio de sesión exitoso!');
+                navigate('/profile'); // Redirige a la página de perfil
+            } else {
+                // Si la respuesta fue exitosa (status 200) pero no hay token
+                setErrorMessage('La respuesta del servidor fue exitosa, pero no se encontró el token de autenticación.');
+            }
+        } catch (error) {
+            console.error('Error al iniciar sesión:', error);
+            if (error.response) {
+                // El servidor respondió con un status diferente de 2xx
+                // Por ejemplo, 401 Unauthorized, 400 Bad Request, etc.
+                setErrorMessage(error.response.data.message || 'Error de credenciales o de servidor.');
+            } else if (error.request) {
+                // La solicitud fue hecha pero no se recibió respuesta (ej. red caída, CORS mal configurado)
+                setErrorMessage('No se pudo conectar con el servidor. Verifica tu conexión.');
+            } else {
+                // Algo más sucedió al configurar la solicitud
+                setErrorMessage('Error inesperado al intentar iniciar sesión.');
+            }
         }
-
-        // Opcional: Limpiar los campos después de intentar iniciar sesión (independientemente del éxito)
-        // setEmail('');
-        // setPassword('');
     };
 
     return (
@@ -47,8 +68,8 @@ function LoginPage({ onLogin }) {
                             type="email"
                             id="email"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)} // Actualiza el estado cuando el input cambia
-                            required // Hace que el campo sea obligatorio
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
                             placeholder="tu@correo.com"
                         />
                     </div>
@@ -58,11 +79,12 @@ function LoginPage({ onLogin }) {
                             type="password"
                             id="password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)} // Actualiza el estado cuando el input cambia
-                            required // Hace que el campo sea obligatorio
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
                             placeholder="********"
                         />
                     </div>
+                    {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Muestra el mensaje de error */}
                     <button type="submit" className="login-button">
                         Iniciar Sesión
                     </button>

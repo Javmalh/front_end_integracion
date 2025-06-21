@@ -86,3 +86,12 @@
 .register-link a:hover {
     text-decoration: underline; /* Subrayado al pasar el ratón */
 }
+
+/* Estilo para el mensaje de error */
+.error-message {
+    color: #dc3545; /* Rojo para errores */
+    font-size: 0.9rem;
+    margin-top: -10px; /* Ajusta el margen para que esté cerca del botón/campos */
+    margin-bottom: 15px;
+    text-align: center;
+}
