@@ -10,6 +10,7 @@ import { CartProvider } from './components/Cart/CartProvider'; // Asegúrate de 
 import LoginPage from './pages/LoginPage'; // <-- ¡Importa tu LoginPage!
 import RegisterPage from './pages/RegisterPage'; // <-- ¡Importa RegisterPage!
 import './App.css';
+import Sucursales from "./pages/Sucursales";
 
 function App() {
     return (
@@ -33,6 +34,9 @@ function App() {
 
                             {/* Route para la página de registro */}
                             <Route path="/register" element={<RegisterPage />} /> {/* <-- ¡Nueva ruta para RegisterPage! */}
+
+                            {/* Route para la página de sucursales */}
+                            <Route path="/sucursales" element={<Sucursales />} />
 
                             {/* Puedes añadir más rutas aquí para otras páginas, por ejemplo: */}
                             {/* <Route path="/productos" element={<ProductListPage />} /> */}

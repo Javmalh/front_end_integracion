@@ -26,7 +26,11 @@ function Header() {
 
                 <nav className="main-nav">
                     <ul>
-                        <li><button className="nav-button">Sucursales</button></li>
+                        <li>
+                            <Link to="/sucursales" className="nav-button">
+                            Sucursales
+                            </Link>
+                        </li>
                         <li>
                             {/* Cambiado a Link para navegar a la página de inicio de sesión */}
                             <Link to="/login" className="nav-button">
