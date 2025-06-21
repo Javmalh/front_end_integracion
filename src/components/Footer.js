@@ -32,7 +32,7 @@ function Footer() {
                     <h3>Contáctanos</h3>
                     <p>Dirección: Av. Principal 123, Valparaíso, Chile</p>
                     <p>Teléfono: +56 9 1234 5678</p>
-                    <p>Email: info@ferremax.cl</p>
+                    <p>Email: ferremaxplus2025@gmail.com</p>
                     <p>Horario: Lun-Vie: 9am - 6pm</p>
                 </div>
 
@@ -40,13 +40,13 @@ function Footer() {
                 <div className="footer-section footer-social">
                     <h3>Síguenos</h3>
                     <div className="social-icons">
-                        <a href="https://facebook.com/ferremax" target="_blank" rel="noopener noreferrer">
+                        <a href="https://web.facebook.com/profile.php?id=61577413776150" target="_blank" rel="noopener noreferrer">
                             <i className="fab fa-facebook-f"></i> {/* Icono de Facebook */}
                         </a>
-                        <a href="https://twitter.com/ferremax" target="_blank" rel="noopener noreferrer">
+                        <a href="https://x.com/max_ferre2357" target="_blank" rel="noopener noreferrer">
                             <i className="fab fa-twitter"></i> {/* Icono de Twitter */}
                         </a>
-                        <a href="https://instagram.com/ferremax" target="_blank" rel="noopener noreferrer">
+                        <a href="https://www.instagram.com/ferremax_plus/" target="_blank" rel="noopener noreferrer">
                             <i className="fab fa-instagram"></i> {/* Icono de Instagram */}
                         </a>
                         {/* Necesitarás una librería de iconos como Font Awesome */}
