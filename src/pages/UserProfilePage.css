@@ -1,0 +1,105 @@
+/* src/pages/UserProfilePage.css */
+
+.user-profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 150px); /* Ajusta esta altura según tu header/footer */
+    background-color: #f0f2f5;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.user-profile-card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px; /* Un poco más ancha para contenido de perfil */
+    text-align: center;
+}
+
+.user-profile-card h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 32px;
+}
+
+.user-profile-card p {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.profile-details {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    text-align: left;
+}
+
+.profile-details h3 {
+    color: #007bff;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.profile-details p {
+    margin-bottom: 10px;
+}
+
+.profile-details strong {
+    color: #333;
+}
+
+.profile-actions {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    text-align: left;
+}
+
+.profile-actions h3 {
+    color: #007bff;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.profile-actions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.profile-actions li {
+    margin-bottom: 10px;
+}
+
+.profile-actions a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.profile-actions a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.logout-button {
+    background-color: #dc3545; /* Rojo para el botón de cerrar sesión */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+.logout-button:hover {
+    background-color: #c82333;
+}

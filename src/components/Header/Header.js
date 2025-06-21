@@ -1,4 +1,5 @@
 // src/components/Header/Header.js
+
 import React from 'react';
 import { Link } from 'react-router-dom'; // Importa Link de react-router-dom
 import { useCart } from '../Cart/CartProvider'; // Importa tu hook useCart
@@ -6,7 +7,8 @@ import { useCart } from '../Cart/CartProvider'; // Importa tu hook useCart
 import './Header.css'; // Asegúrate de que esta ruta sea correcta para tu Header.css
 import logo from '../../assets/ferremax-logo.png';
 
-function Header() {
+// El componente Header ahora recibe las props isLoggedIn, userName, y onLogout
+function Header({ isLoggedIn, userName, onLogout }) {
     const { getTotalItems } = useCart(); // Obtén la función para el total de ítems del carrito
 
     return (
@@ -28,15 +30,33 @@ function Header() {
                     <ul>
                         <li>
                             <Link to="/sucursales" className="nav-button">
-                            Sucursales
+                                Sucursales
                             </Link>
                         </li>
-                        <li>
-                            {/* Cambiado a Link para navegar a la página de inicio de sesión */}
-                            <Link to="/login" className="nav-button">
-                                Iniciar Sesión
-                            </Link>
-                        </li>
+                        {/* Renderizado condicional basado en si el usuario está logeado */}
+                        {isLoggedIn ? (
+                            <>
+                                {/* Si el usuario está logeado, muestra el enlace al perfil y el botón de cerrar sesión */}
+                                <li>
+                                    <Link to="/profile" className="nav-button">
+                                        Hola, {userName.split(' ')[0]} {/* Muestra solo el primer nombre */}
+                                    </Link>
+                                </li>
+                                <li>
+                                    {/* Botón de cerrar sesión que llama a la función onLogout pasada como prop */}
+                                    <button onClick={onLogout} className="nav-button logout-button">
+                                        Cerrar Sesión
+                                    </button>
+                                </li>
+                            </>
+                        ) : (
+                            // Si el usuario NO está logeado, muestra el enlace para iniciar sesión
+                            <li>
+                                <Link to="/login" className="nav-button">
+                                    Iniciar Sesión
+                                </Link>
+                            </li>
+                        )}
                         <li>
                             {/* Usa el componente Link para navegar al carrito */}
                             <Link to="/cart" className="nav-button cart-button">
