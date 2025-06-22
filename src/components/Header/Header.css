@@ -25,6 +25,7 @@
     height: 50px; /* Ajusta el tamaño del logo */
     width: auto;
     margin-right: 15px;
+    vertical-align: middle;
 }
 
 /* Barra de búsqueda */
@@ -41,6 +42,7 @@
     border-radius: 5px 0 0 5px; /* Bordes redondeados a la izquierda */
     font-size: 1rem;
     outline: none;
+    box-sizing: border-box;
 }
 
 .search-bar button {
@@ -52,6 +54,7 @@
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s ease;
+    box-sizing: border-box;
 }
 
 .search-bar button:hover {
@@ -64,47 +67,105 @@
     margin: 0;
     padding: 0;
     display: flex;
+    align-items: center; /* Alinea verticalmente los ítems del flexbox */
+    /* Asegúrate de que no haya un font-size o line-height global que los afecte inesperadamente */
 }
 
 .main-nav ul li {
-    margin-left: 15px; /* Espacio entre los botones */
+    margin-left: 15px; /* Espacio entre los elementos de la lista */
+    display: flex; /* Convierte cada li en un contenedor flex */
+    align-items: center; /* Centra verticalmente el contenido dentro de cada li */
+    /* Resetea posibles valores no deseados heredados */
+    padding: 0;
+    border: 0;
 }
 
-/* Estilos para el botón y el LINK que usa la clase nav-button */
-.nav-button,
-.nav-button:link, /* Para enlaces no visitados */
-.nav-button:visited /* Para enlaces visitados */
-{
-    background-color: #61dafb; /* Un azul claro/celeste para los botones */
-    color: #282c34; /* Texto oscuro para contraste */
-    padding: 10px 15px;
+/* CLASE BASE PARA TODOS LOS BOTONES DE NAVEGACIÓN (LINKS Y BUTTONS) */
+.header-button-base {
+    /* Reset de estilos nativos de botón/enlace para asegurar consistencia */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
+    color: inherit;
     border: none;
-    border-radius: 5px;
-    font-size: 0.95rem;
-    font-weight: bold;
+    margin: 0;
+    padding: 0; /* Se define a continuación */
+    font-family: inherit;
+    font-size: 0.95rem; /* Establece un tamaño de fuente explícito y consistente */
+    line-height: 1; /* Normaliza la altura de línea */
+    text-align: center;
     cursor: pointer;
+    text-decoration: none;
+
+    /* Estilos comunes que se aplicarán a todos */
+    padding: 10px 15px; /* Padding consistente */
+    border-radius: 5px;
+    font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    white-space: nowrap; /* Evita que el texto del botón se rompa */
-    text-decoration: none; /* <-- ¡Importante: Quita el subrayado predeterminado de los enlaces! */
-    display: inline-block; /* <-- ¡Importante: Asegura que padding y dimensiones se apliquen correctamente! */
-    box-sizing: border-box; /* Para que padding no añada ancho/alto extra */
+    white-space: nowrap;
+    display: inline-flex; /* Usar inline-flex para centrado interno y flexibilidad */
+    align-items: center; /* Centra verticalmente el contenido dentro del botón */
+    justify-content: center; /* Centra horizontalmente el contenido dentro del botón */
+    box-sizing: border-box; /* Incluye padding y border en el ancho/alto total */
+    height: auto; /* Permite que la altura se ajuste al contenido con padding */
+    vertical-align: middle; /* Fuerza alineación media, crucial para elementos inline-block/flex */
+    /* Altura explícita puede ser una solución si todo lo demás falla, pero es menos flexible: */
+    /* height: 40px; */ /* Ajusta esto si los botones tienen alturas muy diferentes */
+}
+
+.header-button-base:hover {
+    transform: translateY(-2px);
+}
+
+/* Estilos específicos para los botones de navegación (azules) */
+.nav-button {
+    background-color: #61dafb;
+    color: #282c34;
 }
 
 .nav-button:hover {
     background-color: #21a1f1;
-    transform: translateY(-2px);
-    text-decoration: none; /* Asegura que no aparezca subrayado al pasar el ratón */
 }
 
+/* Estilos específicos para el botón del carrito */
 .cart-button {
-    background-color: #e67e22; /* Naranja para el carrito */
+    background-color: #e67e22;
     color: white;
-    padding: 10px 20px;
 }
 
 .cart-button:hover {
     background-color: #d35400;
 }
+
+/* ESTILOS ESPECÍFICOS PARA EL BOTÓN DE CERRAR SESIÓN (ROJO) */
+.logout-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.logout-button:hover {
+    background-color: #c0392b;
+}
+
+/* Estilos para el contador de ítems del carrito */
+.cart-item-count {
+    background-color: #28a745;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 7px;
+    font-size: 0.75rem;
+    position: relative;
+    top: -8px;
+    right: -5px;
+    margin-left: 5px;
+    display: inline-block;
+    min-width: 15px;
+    text-align: center;
+    line-height: 1;
+    box-sizing: border-box;
+}
+
 
 /*Responsive adjustments */
 @media (max-width: 768px) {
@@ -113,12 +174,12 @@
         justify-content: center;
     }
     .logo-section, .search-bar, .main-nav {
-        flex-basis: 100%; /* Ocupan t odo el ancho */
+        flex-basis: 100%;
         margin-bottom: 15px;
         justify-content: center;
     }
     .search-bar {
-        order: 1; /* Mover la barra de búsqueda arriba */
+        order: 1;
     }
     .main-nav ul {
         justify-content: center;

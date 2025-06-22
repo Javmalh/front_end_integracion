@@ -1,0 +1,98 @@
+/* src/components/FilterSidebar/FilterSidebar.css */
+
+.filter-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    align-self: flex-start;
+    position: sticky;
+    top: 20px;
+}
+
+.filter-sidebar h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.filter-categories {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.category-item {
+    margin-bottom: 10px; /* Reducido un poco para listas largas */
+}
+
+.category-name {
+    font-weight: bold;
+    color: #007bff;
+    display: block;
+    margin-bottom: 5px; /* Reducido */
+    cursor: pointer;
+    font-size: 1.05rem; /* Ligeramente más pequeño */
+    transition: color 0.2s ease;
+}
+
+.category-name:hover {
+    color: #0056b3;
+}
+
+.subcategories-list {
+    list-style: none;
+    padding-left: 15px;
+    margin: 0;
+}
+
+.subcategory-item {
+    margin-bottom: 5px;
+}
+
+.subcategory-item label {
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    color: #555;
+    cursor: pointer;
+}
+
+.subcategory-item input[type="checkbox"] {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    accent-color: #4CAF50;
+}
+
+.clear-filters-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.clear-filters-button:hover {
+    background-color: #d32f2f;
+}
+
+.error-message { /* Estilos para mensajes de error de carga de categorías */
+    color: #dc3545;
+    text-align: center;
+    font-weight: bold;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    margin-top: 10px;
+}

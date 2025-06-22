@@ -88,8 +88,15 @@
     text-decoration: underline;
 }
 
+/*
+    ¡IMPORTANTE! La regla .logout-button HA SIDO ELIMINADA de este archivo.
+    Sus estilos ahora serán gestionados exclusivamente por Header.css,
+    lo que solucionará el problema de alineación causado por el margin-top.
+*/
+
+/*
 .logout-button {
-    background-color: #dc3545; /* Rojo para el botón de cerrar sesión */
+    background-color: #dc3545;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -103,3 +110,4 @@
 .logout-button:hover {
     background-color: #c82333;
 }
+*/

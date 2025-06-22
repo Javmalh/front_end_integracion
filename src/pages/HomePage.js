@@ -1,5 +1,7 @@
+// src/pages/HomePage.js
 import React from 'react';
 import ProductSlider from '../components/ProductSlider/ProductSlider'; // Importa el slider
+import { Link } from 'react-router-dom'; // <--- IMPORTANTE: Importa Link
 import './HomePage.css';
 
 function HomePage() {
@@ -7,7 +9,8 @@ function HomePage() {
         <div className="home-page">
             {/* Sección de botones de Categorías y Ofertas */}
             <div className="secondary-nav">
-                <button className="nav-button-secondary">Categorías</button>
+                {/* CAMBIO: Usamos Link para navegar a la página de productos */}
+                <Link to="/productos" className="nav-button-secondary">Productos</Link> {/* <--- BOTÓN MODIFICADO */}
                 <button className="nav-button-secondary">Ofertas</button>
             </div>
 
@@ -18,7 +21,8 @@ function HomePage() {
             <section className="hero-section">
                 <h2>Bienvenido a FerreMax</h2>
                 <p>Todo lo que necesitas para tus proyectos, grandes o pequeños.</p>
-                <button className="btn-primary">Explorar Productos</button>
+                {/* Opcional: También puedes hacer que este botón "Explorar Productos" navegue a /productos */}
+                <Link to="/productos" className="btn-primary">Explorar Productos</Link>
             </section>
 
             <section className="featured-products">

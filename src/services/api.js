@@ -30,8 +30,8 @@ export const registerUser = (userData) => api.post('/auth/register', userData);
 export const loginUser = (credentials) => api.post('/auth/login', credentials);
 
 // --- Métodos de Productos ---
-export const getProducts = () => api.get('/producto/{id}');
-// export const getProductById = (id) => api.get(`/productos/${id}`); // Si tuvieras un endpoint para un solo producto
+export const getProducts = () => api.get('/productos'); // Se corrigió a '/productos' sin '{id}' para obtener todos
+export const getProductById = (id) => api.get(`/productos/${id}`); // Agregado si lo necesitas
 // export const createProduct = (productData) => api.post('/productos', productData);
 // export const updateProduct = (id, productData) => api.put(`/productos/${id}`, productData);
 // export const deleteProduct = (id) => api.delete(`/productos/${id}`);
@@ -41,8 +41,8 @@ export const getProducts = () => api.get('/producto/{id}');
 export const getOrders = () => api.get('/ordenes');
 export const getOrdersByBranch = (branchName) => api.get(`/ordenes?sucursal=${branchName}`);
 export const createOrder = (orderData) => api.post('/ordenes', orderData);
-// export const updateOrder = (id, orderData) => api.put(`/ordenes/${id}`, orderData); // Si tuvieras un PUT para ordenes
-// export const deleteOrder = (id) => api.delete(`/ordenes/${id}`); // Si tuvieras un DELETE para ordenes
+// export const updateOrder = (id, orderData) => api.put(`/ordenes/${id}`, orderData);
+// export const deleteOrder = (id) => api.delete(`/ordenes/${id}`);
 
 
 // --- Métodos de Pagos (Payment) ---
