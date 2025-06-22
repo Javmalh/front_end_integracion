@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // ¡Asegúrate de que axios esté instalado: npm install axios o yarn add axios!
-import './LoginPage.css';
+import './LoginPage.css'; // Asegúrate de que esta ruta sea correcta
 
 // El componente LoginPage espera recibir la prop onLogin desde App.js
 function LoginPage({ onLogin }) {
@@ -37,14 +37,31 @@ function LoginPage({ onLogin }) {
                 // Asume que el backend podría enviar un 'username', si no, usa el email como fallback
                 const userName = response.data.username || email;
 
-                // Llama a la función onLogin pasada desde App.js para actualizar el estado global
-                onLogin(accessToken, userName);
+                // *****************************************************************
+                // ¡IMPORTANTE! Lógica TEMPORAL para determinar el rol en el frontend.
+                // Idealmente, el backend DEBE ser quien envíe el rol del usuario
+                // como parte de la respuesta del login (ej., response.data.role).
+                // *****************************************************************
+                let userRole = 'USER'; // Rol por defecto
+                if (email.endsWith('@ferremax.com')) { // Si el correo termina en @ferremax.com, es un trabajador
+                    userRole = 'WORKER';
+                }
+                // Si tu backend ya envía el rol, usarías:
+                // const userRole = response.data.role; // Asume que el backend devuelve un campo 'role'
+
+                // Llama a la función onLogin pasada desde App.js, pasándole el token, el nombre y el rol
+                onLogin(accessToken, userName, userRole); // <-- ¡Pasando el rol ahora!
 
                 // No es necesario un alert si vas a redirigir.
                 // alert('¡Inicio de sesión exitoso!');
 
-                // Redirige al usuario a la página de perfil (o a la que desees después del login)
-                navigate('/profile');
+                // Redirige al usuario a la página adecuada según su rol
+                if (userRole === 'WORKER') {
+                    navigate('/worker-dashboard'); // Redirige al dashboard del trabajador
+                } else {
+                    navigate('/profile'); // Redirige al perfil del cliente normal
+                }
+
             } else {
                 // Si la respuesta fue 200 OK pero por alguna razón no se encontró el token en 'data.accessToken'
                 setErrorMessage('La respuesta del servidor fue exitosa, pero no se encontró el token de autenticación.');

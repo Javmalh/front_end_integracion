@@ -32,18 +32,52 @@
     flex-wrap: wrap; /* Para que los elementos se envuelvan en pantallas pequeñas */
 }
 
-.product-controls .search-input,
+/* Contenedor para el input de búsqueda local y el botón de limpiar */
+.search-input-wrapper-local {
+    position: relative;
+    flex-grow: 1;
+    display: flex; /* Asegura que el input y la X estén en línea */
+    max-width: 350px; /* Mantén el ancho máximo original del input */
+}
+
+.product-controls .search-input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    padding-right: 35px; /* Espacio para la X */
+}
+
+/* Estilos para el botón de limpiar la búsqueda local */
+.clear-search-button-local {
+    position: absolute;
+    right: 5px; /* Ajusta la posición de la 'X' */
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666; /* Color de la 'X' */
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.clear-search-button-local:hover {
+    opacity: 1;
+    color: #333; /* Un poco más oscuro al pasar el ratón */
+}
+
 .product-controls .sucursal-select {
     padding: 10px 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1rem;
     box-sizing: border-box;
-    width: 100%; /* Por defecto a 100% para móviles */
-    max-width: 350px; /* Ancho máximo para el input de búsqueda */
-}
-
-.product-controls .sucursal-select {
     max-width: 200px; /* Ancho máximo para el select de sucursal */
     background-color: white; /* Asegura que el fondo sea blanco */
 }
@@ -161,9 +195,11 @@
         flex-direction: column; /* Apila búsqueda y sucursal */
         align-items: center;
     }
-    .product-controls .search-input,
-    .product-controls .sucursal-select {
+    .search-input-wrapper-local {
         max-width: 80%; /* Un poco más de ancho en tabletas */
+    }
+    .product-controls .sucursal-select {
+        max-width: 80%;
     }
     .product-grid {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -180,8 +216,10 @@
     .products-content h2 {
         font-size: 1.8rem;
     }
-    .product-controls .search-input,
-    .product-controls .sucursal-select {
+    .search-input-wrapper-local {
         max-width: 100%; /* Vuelve a 100% para móviles muy pequeños */
+    }
+    .product-controls .sucursal-select {
+        max-width: 100%;
     }
 }

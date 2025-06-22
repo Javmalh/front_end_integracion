@@ -1,74 +1,152 @@
 // src/components/Header/Header.js
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../Cart/CartProvider';
 
-import './Header.css'; // Asegúrate de que esta ruta sea correcta para tu Header.css
+import './Header.css';
 import logo from '../../assets/ferremax-logo.png';
 
-// El componente Header recibe las props isLoggedIn, userName, y onLogout
-function Header({ isLoggedIn, userName, onLogout }) {
-    const { getTotalItems } = useCart(); // Obtén la función para el total de ítems del carrito
+function Header({ isLoggedIn, userName, onLogout, userRole }) {
+    const { getTotalItems } = useCart();
+    const navigate = useNavigate();
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const closeDropdown = () => {
+        setIsDropdownOpen(false);
+    };
+
+    const handleLogout = () => {
+        onLogout();
+        closeDropdown();
+    };
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+
+        if (searchTerm.trim()) {
+            navigate(`/productos?search=${encodeURIComponent(searchTerm.trim())}`);
+        } else {
+            navigate('/productos');
+        }
+    };
+
+    const clearSearchTerm = () => {
+        setSearchTerm('');
+        // Opcional: si quieres que al borrar el texto con la X
+        // se haga una nueva búsqueda para mostrar todos los productos
+        // puedes navegar de nuevo, pero esto recargaría la página si ya estás en /productos
+        // navigate('/productos');
+    };
 
     return (
         <header className="header">
             <div className="header-top">
                 <div className="logo-section">
-                    {/* El logo también puede ser un Link a la página principal */}
                     <Link to="/">
                         <img src={logo} alt="FerreMax Logo" className="logo" />
                     </Link>
                 </div>
 
-                <div className="search-bar">
-                    <input type="text" placeholder="Buscar productos por nombre o ID..." />
+                <form className="search-bar" onSubmit={handleSearch}>
+                    <div className="search-input-wrapper">
+                        <input
+                            type="text"
+                            placeholder="Buscar productos por nombre o ID..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        {searchTerm && (
+                            <button
+                                type="button"
+                                className="clear-search-button"
+                                onClick={clearSearchTerm}
+                            >
+                                &#x2715;
+                            </button>
+                        )}
+                    </div>
                     <button type="submit">Buscar</button>
-                </div>
+                </form>
 
                 <nav className="main-nav">
                     <ul>
                         <li>
-                            {/* Aplicamos header-button-base y nav-button */}
                             <Link to="/sucursales" className="header-button-base nav-button">
                                 Sucursales
                             </Link>
                         </li>
-                        {/* Renderizado condicional basado en si el usuario está logeado */}
+
                         {isLoggedIn ? (
                             <>
+                                {userRole === 'WORKER' ? (
+                                    <>
+                                        <li>
+                                            <Link to="/worker-dashboard" className="header-button-base nav-button">
+                                                Panel Trabajador
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <button onClick={onLogout} className="header-button-base logout-button">
+                                                Cerrar Sesión
+                                            </button>
+                                        </li>
+                                    </>
+                                ) : (
+                                    <>
+                                        <li className="profile-dropdown-container">
+                                            <button
+                                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                                className="header-button-base nav-button profile-dropdown-button"
+                                            >
+                                                Perfil
+                                            </button>
+                                            <div className="profile-dropdown-menu">
+                                                <Link
+                                                    to="/profile"
+                                                    className="dropdown-item"
+                                                    onClick={closeDropdown}
+                                                >
+                                                    Mis Datos
+                                                </Link>
+                                                <button
+                                                    onClick={handleLogout}
+                                                    className="dropdown-item logout-dropdown-item"
+                                                >
+                                                    Cerrar Sesión
+                                                </button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <Link to="/cart" className="header-button-base cart-button">
+                                                🛒 Carrito
+                                                {getTotalItems() > 0 && (
+                                                    <span className="cart-item-count">{getTotalItems()}</span>
+                                                )}
+                                            </Link>
+                                        </li>
+                                    </>
+                                )}
+                            </>
+                        ) : (
+                            <>
                                 <li>
-                                    {/* Aplicamos header-button-base y nav-button */}
-                                    <Link to="/profile" className="header-button-base nav-button">
-                                        Hola, {userName.split(' ')[0]} {/* Muestra solo el primer nombre */}
+                                    <Link to="/login" className="header-button-base nav-button">
+                                        Iniciar Sesión
                                     </Link>
                                 </li>
                                 <li>
-                                    {/* Aplicamos header-button-base y logout-button */}
-                                    <button onClick={onLogout} className="header-button-base logout-button">
-                                        Cerrar Sesión
-                                    </button>
+                                    <Link to="/cart" className="header-button-base cart-button">
+                                        🛒 Carrito
+                                        {getTotalItems() > 0 && (
+                                            <span className="cart-item-count">{getTotalItems()}</span>
+                                        )}
+                                    </Link>
                                 </li>
                             </>
-                        ) : (
-                            // Si el usuario NO está logeado, muestra el enlace para iniciar sesión
-                            <li>
-                                {/* Aplicamos header-button-base y nav-button */}
-                                <Link to="/login" className="header-button-base nav-button">
-                                    Iniciar Sesión
-                                </Link>
-                            </li>
                         )}
-                        <li>
-                            {/* Aplicamos header-button-base y cart-button */}
-                            <Link to="/cart" className="header-button-base cart-button">
-                                🛒 Carrito
-                                {/* Muestra la cantidad de ítems si es mayor a 0 */}
-                                {getTotalItems() > 0 && (
-                                    <span className="cart-item-count">{getTotalItems()}</span>
-                                )}
-                            </Link>
-                        </li>
                     </ul>
                 </nav>
             </div>
