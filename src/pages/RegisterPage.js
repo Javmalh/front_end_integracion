@@ -1,39 +1,26 @@
-// src/pages/RegisterPage.js
-
 import React, { useState } from 'react';
-// Importa el CSS específico para esta página. Se asume que está en la misma carpeta.
+import { Link } from 'react-router-dom';
 import './RegisterPage.css';
 
 function RegisterPage() {
-    // Estados para almacenar los valores de los campos del formulario
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    // Función que se ejecuta cuando se envía el formulario
     const handleSubmit = (e) => {
-        e.preventDefault(); // Evita que la página se recargue al enviar el formulario
+        e.preventDefault();
 
-        // Validación simple de contraseña
         if (password !== confirmPassword) {
             alert('Las contraseñas no coinciden. Por favor, verifica.');
-            return; // Detiene la función si las contraseñas no coinciden
+            return;
         }
 
         console.log('Intentando registrar usuario:');
         console.log('Nombre:', name);
         console.log('Correo Electrónico:', email);
         console.log('Contraseña:', password);
-        // Aquí es donde, en el futuro, conectarás con tu API de backend para registrar al usuario.
-        // Por ahora, solo mostraremos una alerta.
         alert('Registro simulado para: ' + email);
-
-        // Opcional: Limpiar los campos después de enviar
-        // setName('');
-        // setEmail('');
-        // setPassword('');
-        // setConfirmPassword('');
     };
 
     return (
@@ -90,7 +77,10 @@ function RegisterPage() {
                     </button>
                 </form>
                 <p className="login-link">
-                    ¿Ya tienes cuenta? <a href="/login">Inicia Sesión aquí</a>
+                    ¿Ya tienes cuenta? <Link to="/login">Inicia Sesión aquí</Link>
+                </p>
+                <p className="back-to-home-link">
+                    <Link to="/" className="back-button">Volver a Inicio</Link>
                 </p>
             </div>
         </div>

@@ -1,7 +1,5 @@
-// src/App.js
-
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header/Header';
 import HomePage from './pages/HomePage';
 import CartPage from './pages/CartPage';
@@ -10,127 +8,146 @@ import { CartProvider } from './components/Cart/CartProvider';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import UserProfilePage from './pages/UserProfilePage';
-import WorkerDashboardPage from './pages/WorkerDashboardPage'; // <-- ¡IMPORTA LA NUEVA VISTA DEL TRABAJADOR!
+import WorkerDashboardPage from './pages/WorkerDashboardPage';
 import Sucursales from "./pages/Sucursales";
-import ProductListPage from './pages/ProductListPage'; // Asegúrate que la ruta sea correcta
+import ProductListPage from './pages/ProductListPage';
+import AccountSettingsPage from './pages/AccountSettingsPage';
 
 import './App.css';
 
+// Componente para hacer scroll al top en cada cambio de ruta
+function ScrollToTop() {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return null;
+}
+
 function App() {
-    // Estados inicializados desde localStorage para persistencia al recargar la página
+    const location = useLocation();
+
+    // Estado para verificar si el usuario está logueado, inicializado desde localStorage
     const [isLoggedIn, setIsLoggedIn] = useState(() => {
         const storedToken = localStorage.getItem('jwtToken');
-        return !!storedToken; // Convertir a booleano (true si hay token, false si no)
+        return !!storedToken; // Convertir a booleano
     });
 
+    // Estado para el nombre de usuario, inicializado desde localStorage
     const [userName, setUserName] = useState(() => {
         return localStorage.getItem('userName') || '';
     });
 
+    // Estado para el token de acceso, inicializado desde localStorage
     const [accessToken, setAccessToken] = useState(() => {
         return localStorage.getItem('jwtToken') || '';
     });
 
-    // Nuevo estado para el rol del usuario, por defecto 'USER'
+    // Estado para el rol del usuario, inicializado desde localStorage
     const [userRole, setUserRole] = useState(() => {
         return localStorage.getItem('userRole') || 'USER';
     });
 
-    // Función de login: ahora acepta token, nombre y rol
-    const handleLogin = (token, name, role) => { // <-- ¡Añadido 'role'!
+    // Función para actualizar el userName globalmente (llamada desde UserProfilePage o AccountSettingsPage)
+    const handleUserNameUpdate = (newName) => {
+        setUserName(newName);
+        localStorage.setItem('userName', newName); // Actualiza también en localStorage
+    };
+
+    // Función para manejar el login
+    const handleLogin = (token, name, role) => {
         setIsLoggedIn(true);
         setAccessToken(token);
         setUserName(name);
-        setUserRole(role); // <-- Guarda el rol
+        setUserRole(role);
         localStorage.setItem('jwtToken', token);
         localStorage.setItem('userName', name);
-        localStorage.setItem('userRole', role); // <-- Guarda el rol en localStorage
+        localStorage.setItem('userRole', role);
     };
 
-    // Función de logout: limpia el estado y localStorage
+    // Función para manejar el logout
     const handleLogout = () => {
         setIsLoggedIn(false);
         setUserName('');
         setAccessToken('');
-        setUserRole('USER'); // Restablece el rol a USER
+        setUserRole('USER');
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('userName');
-        localStorage.removeItem('userRole'); // Limpia el rol de localStorage
-        alert('¡Has cerrado sesión!');
+        localStorage.removeItem('userRole');
+        alert('¡Has cerrado sesión!'); // O puedes usar un toast/notificación
     };
 
-    // Efecto para inicializar el estado de login/rol al cargar la aplicación
-    // Si ya usas los initializers de useState con localStorage, este useEffect podría ser más simple
-    // o solo para lógica adicional si se necesita (ej. validación de token JWT)
     useEffect(() => {
-        // La lógica de recuperación de localStorage ya está en los useState initializers,
-        // pero puedes añadir validaciones o lógica de token aquí si es necesario.
+        // La lógica de recuperación de localStorage ya está en los useState initializers
+        // Este useEffect podría usarse para otras inicializaciones o verificaciones al montar App.
     }, []);
+
+    // Determina si el header y el footer deben mostrarse según la ruta actual
+    const shouldShowHeaderAndFooter = location.pathname !== '/login' &&
+        location.pathname !== '/register';
 
     return (
         <CartProvider>
-            <Router>
-                <div className="App">
-                    {/* Pasamos el estado de login, las funciones y el rol al Header */}
+            <ScrollToTop /> {/* Asegura que la página se desplace al inicio en cada cambio de ruta */}
+            <div className="App">
+                {shouldShowHeaderAndFooter && (
                     <Header
                         isLoggedIn={isLoggedIn}
                         userName={userName}
                         onLogout={handleLogout}
-                        userRole={userRole} // <-- ¡Pasa el rol al Header!
+                        userRole={userRole}
                     />
-                    <main>
-                        <Routes>
-                            <Route path="/" element={<HomePage />} />
-                            <Route path="/cart" element={<CartPage />} />
-                            {/* Pasamos la función de login actualizada a LoginPage */}
-                            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-                            <Route path="/register" element={<RegisterPage />} />
-                            <Route path="/sucursales" element={<Sucursales />} />
-                            <Route path="/productos" element={<ProductListPage />} />
+                )}
+                <main>
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/cart" element={<CartPage />} />
+                        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+                        <Route path="/register" element={<RegisterPage />} />
+                        <Route path="/sucursales" element={<Sucursales />} />
+                        <Route path="/productos" element={<ProductListPage />} />
 
-                            {/* Rutas condicionales basadas en el estado de login y el rol */}
-                            {isLoggedIn ? (
-                                // Si el usuario está logeado
-                                <>
-                                    {/* Ruta para el panel del trabajador (WorkerDashboardPage) */}
-                                    <Route path="/worker-dashboard" element={<WorkerDashboardPage />} />
-                                    {/* Ruta para el perfil del usuario normal (UserProfilePage) */}
-                                    <Route path="/profile" element={<UserProfilePage userName={userName} />} />
+                        {/* Rutas protegidas que solo son accesibles si el usuario está logueado */}
+                        {isLoggedIn ? (
+                            <>
+                                <Route path="/worker-dashboard" element={<WorkerDashboardPage />} />
+                                {/* Se pasa la función onProfileUpdate a los componentes de perfil y configuración */}
+                                <Route
+                                    path="/profile"
+                                    element={<UserProfilePage onProfileUpdate={handleUserNameUpdate} />}
+                                />
+                                <Route
+                                    path="/settings"
+                                    element={<AccountSettingsPage onProfileUpdate={handleUserNameUpdate} />}
+                                />
+                            </>
+                        ) : (
+                            // Si no está logueado, redirige a la página de login para estas rutas
+                            <>
+                                <Route path="/profile" element={<RedirectToLogin />} />
+                                <Route path="/worker-dashboard" element={<RedirectToLogin />} />
+                                <Route path="/settings" element={<RedirectToLogin />} />
+                            </>
+                        )}
 
-                                    {/* Opcional: Redireccionar si un trabajador intenta ir a /profile o viceversa
-                                        Esto puede hacerse con un componente que haga la verificación
-                                        o con lógica más avanzada en el mismo componente renderizado.
-                                        Por ahora, simplemente los mapeamos, y el Header guiará.
-                                    */}
-                                </>
-                            ) : (
-                                // Si el usuario NO está logeado, estas rutas redirigen a login
-                                <>
-                                    <Route path="/profile" element={<RedirectToLogin />} />
-                                    <Route path="/worker-dashboard" element={<RedirectToLogin />} />
-                                </>
-                            )}
-
-                            {/* Ruta comodín para manejar cualquier otra URL no definida */}
-                            <Route path="*" element={<h2>404: Página no encontrada</h2>} />
-                        </Routes>
-                    </main>
-                    <Footer />
-                </div>
-            </Router>
+                        <Route path="*" element={<h2>404: Página no encontrada</h2>} />
+                    </Routes>
+                </main>
+                {shouldShowHeaderAndFooter && <Footer />}
+            </div>
         </CartProvider>
     );
 }
 
 // Componente auxiliar para redirigir a login si el usuario no está logueado
-// Usa este componente como 'element' para las rutas protegidas si el usuario no está logeado
 function RedirectToLogin() {
     const navigate = useNavigate();
     useEffect(() => {
-        // Redirige después de que el componente se monte
         navigate('/login');
     }, [navigate]);
-    return null; // Este componente no renderiza nada visible
+    return null;
 }
 
 export default App;

@@ -99,16 +99,19 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    align-items: center;
+    display: flex; /* Usamos flexbox para alinear los ítems de la lista */
+    align-items: center; /* Centra verticalmente los ítems */
+    gap: 15px; /* Espacio entre los ítems (reemplaza margin-left en li) */
 }
 
 .main-nav ul li {
-    margin-left: 15px;
+    /* Eliminamos margin-left aquí ya que lo manejamos con gap en el ul */
+    margin-left: 0; /* Asegurarse de que no haya margin-left heredado */
     display: flex;
     align-items: center;
     padding: 0;
     border: 0;
+    /* Aseguramos que el li no afecte el tamaño del botón */
 }
 
 /* CLASE BASE PARA TODOS LOS BOTONES DE NAVEGACIÓN (LINKS Y BUTTONS) */
@@ -128,17 +131,21 @@
     cursor: pointer;
     text-decoration: none;
 
-    padding: 10px 15px;
+    /* Estos son los estilos clave para el tamaño y centrado */
+    padding: 10px 15px; /* Ajusta este padding para el tamaño deseado */
     border-radius: 5px;
     font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
     white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-flex; /* Permite centrar contenido y controlar el tamaño */
+    align-items: center; /* Centra el texto verticalmente */
+    justify-content: center; /* Centra el texto horizontalmente */
     box-sizing: border-box;
-    height: auto;
-    vertical-align: middle;
+    height: auto; /* Permite que la altura se ajuste al contenido */
+
+    /* AÑADIR UN ANCHO MÍNIMO SI QUIERES QUE TODOS SEAN VISUALMENTE DEL MISMO ANCHO */
+    /* Elige el ancho que mejor se adapte al texto más largo de tus botones. */
+    min-width: 110px; /* Ejemplo: ajusta esto a lo que se vea mejor */
 }
 
 .header-button-base:hover {
@@ -193,32 +200,34 @@
     box-sizing: border-box;
 }
 
-/* --- ESTILOS PARA EL MENÚ DESPLEGABLE DE PERFIL (MODIFICADOS PARA HOVER) --- */
+/* --- ESTILOS PARA EL MENÚ DESPLEGABLE DE PERFIL --- */
 .profile-dropdown-container {
     position: relative;
-    margin-left: 15px;
+    margin-left: 0; /* Handled by ul gap */
     display: flex;
     align-items: center;
-    padding-bottom: 5px; /* Pequeño padding para el hover */
+    padding-bottom: 0px;
 }
 
 .profile-dropdown-button {
-    /* Hereda de .header-button-base y .nav-button */
+    /* Inherits from .header-button-base and .nav-button */
 }
 
 .profile-dropdown-menu {
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: #1A1A1A; /* Mismo color que el header para cohesión */
+    background-color: #1A1A1A;
     border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra más pronunciada para contraste */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     min-width: 160px;
     z-index: 1000;
     padding: 5px 0;
     display: flex;
     flex-direction: column;
 
+    /* Estos estilos son gestionados por React con renderizado condicional */
+    /* Cuando el componente no existe, no se muestra. Cuando existe, se aplica la transición */
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
@@ -226,6 +235,9 @@
     pointer-events: none;
 }
 
+/* --- ESTA REGLA CSS AHORA NO ES ESTRICTAMENTE NECESARIA PARA MOSTRAR/OCULTAR, PERO MANTIENE LA TRANSICIÓN --- */
+/* Ya que el menú se renderiza/desrenderiza, esta regla solo aplica cuando está presente en el DOM y se hace hover en el padre. */
+/* La visibilidad principal ahora la controla el estado de React en Header.js */
 .profile-dropdown-container:hover .profile-dropdown-menu {
     opacity: 1;
     visibility: visible;
@@ -233,7 +245,49 @@
     pointer-events: auto;
 }
 
-/* Estilos para los ítems individuales dentro del menú desplegable */
+/* --- NUEVOS ESTILOS PARA EL MENÚ DESPLEGABLE DE SUCURSALES --- */
+.sucursales-dropdown-container {
+    position: relative;
+    margin-left: 0; /* Handled by ul gap */
+    display: flex;
+    align-items: center;
+    padding-bottom: 0px; /* Asegurarse de que no haya padding extra aquí */
+}
+
+.sucursales-dropdown-menu {
+    position: absolute;
+    top: 100%; /* Posiciona el dropdown justo debajo del botón */
+    left: 0; /* Alinea con el borde izquierdo del botón */
+    background-color: #1A1A1A; /* Mismo color que el header y perfil */
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    min-width: 180px; /* Ancho mínimo para los nombres de las sucursales */
+    z-index: 1000;
+    padding: 5px 0;
+    display: flex;
+    flex-direction: column;
+
+    /* Estos estilos son gestionados por React con renderizado condicional */
+    /* Cuando el componente no existe, no se muestra. Cuando existe, se aplica la transición */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    pointer-events: none;
+}
+
+/* --- ESTA REGLA CSS AHORA NO ES ESTRICTAMENTE NECESARIA PARA MOSTRAR/OCULTAR, PERO MANTIENE LA TRANSICIÓN --- */
+/* Ya que el menú se renderiza/desrenderiza, esta regla solo aplica cuando está presente en el DOM y se hace hover en el padre. */
+/* La visibilidad principal ahora la controla el estado de React en Header.js */
+.sucursales-dropdown-container:hover .sucursales-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+
+/* Estilos para los ítems individuales dentro del menú desplegable (comunes para perfil y sucursales) */
 .dropdown-item {
     display: block;
     padding: 10px 15px;
@@ -284,15 +338,18 @@
     }
     .main-nav ul {
         justify-content: center;
+        gap: 10px; /* Reducir gap en móviles si es necesario */
     }
 
-    .profile-dropdown-container {
+    .profile-dropdown-container,
+    .sucursales-dropdown-container { /* Aplica estilos responsivos a ambos dropdowns */
         flex-basis: 100%;
         justify-content: center;
         margin-left: 0;
         padding-bottom: 0;
     }
-    .profile-dropdown-menu {
+    .profile-dropdown-menu,
+    .sucursales-dropdown-menu { /* Aplica estilos responsivos a ambos menús desplegables */
         left: 50%;
         transform: translateX(-50%);
         right: auto;

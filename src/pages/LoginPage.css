@@ -1,97 +1,117 @@
-/* src/pages/LoginPage.css */
-
 .login-page-container {
-    display: flex; /* Para centrar el formulario */
-    justify-content: center; /* Centrado horizontal */
-    align-items: center; /* Centrado vertical */
-    min-height: calc(100vh - 150px); /* Ajusta esta altura según tu header/footer */
-    background-color: #f0f2f5; /* Un fondo gris claro */
-    padding: 20px; /* Espaciado alrededor del contenedor */
-    box-sizing: border-box; /* Incluye padding y border en el ancho/alto */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ocupa el 100% de la altura de la vista */
+    background-color: #f0f2f5;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .login-form-card {
-    background-color: #ffffff; /* Fondo blanco para la tarjeta */
-    padding: 40px; /* Espaciado interno de la tarjeta */
-    border-radius: 8px; /* Bordes redondeados */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 400px; /* Ancho máximo de la tarjeta */
-    text-align: center; /* Centra el texto dentro de la tarjeta */
+    max-width: 400px;
+    text-align: center;
 }
 
 .login-form-card h2 {
-    margin-bottom: 30px; /* Espacio debajo del título */
-    color: #333; /* Color de texto oscuro */
+    margin-bottom: 30px;
+    color: #333;
     font-size: 28px;
 }
 
 .form-group {
-    margin-bottom: 20px; /* Espacio entre grupos de formulario (label + input) */
-    text-align: left; /* Alinea el texto de las etiquetas a la izquierda */
+    margin-bottom: 20px;
+    text-align: left;
 }
 
 .form-group label {
-    display: block; /* Cada etiqueta en su propia línea */
-    margin-bottom: 8px; /* Espacio debajo de la etiqueta */
-    font-weight: bold; /* Negrita para las etiquetas */
-    color: #555; /* Color de texto para las etiquetas */
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
 }
 
 .form-group input[type="email"],
 .form-group input[type="password"] {
-    width: 100%; /* El input ocupa todo el ancho disponible */
-    padding: 12px; /* Espaciado interno del input */
-    border: 1px solid #ddd; /* Borde suave */
-    border-radius: 4px; /* Bordes redondeados del input */
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     font-size: 16px;
-    box-sizing: border-box; /* Muy importante para que el padding no aumente el ancho total del input */
+    box-sizing: border-box;
 }
 
 .form-group input[type="email"]:focus,
 .form-group input[type="password"]:focus {
-    border-color: #007bff; /* Cambia el color del borde al enfocar */
-    outline: none; /* Elimina el contorno predeterminado del navegador */
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Sombra al enfocar */
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
 .login-button {
-    width: 100%; /* El botón ocupa todo el ancho */
+    width: 100%;
     padding: 12px;
-    background-color: #007bff; /* Color primario (azul) */
-    color: white; /* Texto blanco */
-    border: none; /* Sin borde */
+    background-color: #007bff;
+    color: white;
+    border: none;
     border-radius: 4px;
     font-size: 18px;
-    cursor: pointer; /* Cambia el cursor al pasar por encima */
-    transition: background-color 0.3s ease; /* Transición suave al pasar el ratón */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px; /* Espacio debajo del botón de login */
 }
 
 .login-button:hover {
-    background-color: #0056b3; /* Tono más oscuro al pasar el ratón */
+    background-color: #0056b3;
 }
 
 .register-link {
-    margin-top: 20px; /* Espacio encima del enlace de registro */
+    margin-top: 20px;
     font-size: 14px;
     color: #666;
 }
 
 .register-link a {
-    color: #007bff; /* Color del enlace */
-    text-decoration: none; /* Sin subrayado por defecto */
+    color: #007bff;
+    text-decoration: none;
     font-weight: bold;
 }
 
 .register-link a:hover {
-    text-decoration: underline; /* Subrayado al pasar el ratón */
+    text-decoration: underline;
+}
+
+/* --- NUEVO ESTILO: Botón Volver a Inicio --- */
+.back-to-home-link {
+    margin-top: 15px; /* Espacio encima del botón */
+    font-size: 14px;
+}
+
+.back-to-home-link .back-button {
+    display: inline-block; /* Para que el padding y margen funcionen bien */
+    padding: 8px 15px;
+    background-color: #6c757d; /* Gris para un botón secundario */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none; /* Quita el subrayado del Link */
+    transition: background-color 0.3s ease;
+}
+
+.back-to-home-link .back-button:hover {
+    background-color: #5a6268; /* Tono más oscuro al pasar el ratón */
 }
 
 /* Estilo para el mensaje de error */
 .error-message {
-    color: #dc3545; /* Rojo para errores */
+    color: #dc3545;
     font-size: 0.9rem;
-    margin-top: -10px; /* Ajusta el margen para que esté cerca del botón/campos */
+    margin-top: -10px;
     margin-bottom: 15px;
     text-align: center;
 }

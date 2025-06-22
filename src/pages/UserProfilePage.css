@@ -3,8 +3,13 @@
 .user-profile-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 150px); /* Ajusta esta altura según tu header/footer */
+    /* align-items: center;  -> Cambiado a flex-start para que el contenido empiece desde arriba y no se centre verticalmente */
+    align-items: flex-start;
+
+    /* Si el header y footer se ocultan en esta página, 100vh es correcto.
+       Si se muestran (como sugiere tu App.js), deberías ajustar para descontar su altura.
+       Mantengo 100vh según tu comentario, asumiendo que el layout lo justifica. */
+    min-height: 100vh;
     background-color: #f0f2f5;
     padding: 20px;
     box-sizing: border-box;
@@ -16,7 +21,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 600px; /* Un poco más ancha para contenido de perfil */
+    max-width: 600px; /* Ancho máximo para la tarjeta de perfil */
     text-align: center;
 }
 
@@ -32,11 +37,18 @@
     margin-bottom: 15px;
 }
 
+/* El mensaje de bienvenida no tiene una clase específica en tu CSS, pero podrías añadirla si quieres estilos únicos. */
+/* .welcome-message {
+    font-style: italic;
+    color: #777;
+} */
+
+
 .profile-details {
     margin-top: 30px;
     border-top: 1px solid #eee;
     padding-top: 20px;
-    text-align: left;
+    text-align: left; /* Alinea el texto a la izquierda dentro de esta sección */
 }
 
 .profile-details h3 {
@@ -51,13 +63,14 @@
 
 .profile-details strong {
     color: #333;
+    /* Considera usar display: inline-block y min-width para alinear las etiquetas si es necesario */
 }
 
 .profile-actions {
     margin-top: 30px;
     border-top: 1px solid #eee;
     padding-top: 20px;
-    text-align: left;
+    text-align: left; /* Alinea el texto a la izquierda dentro de esta sección */
 }
 
 .profile-actions h3 {
@@ -88,26 +101,38 @@
     text-decoration: underline;
 }
 
-/*
-    ¡IMPORTANTE! La regla .logout-button HA SIDO ELIMINADA de este archivo.
-    Sus estilos ahora serán gestionados exclusivamente por Header.css,
-    lo que solucionará el problema de alineación causado por el margin-top.
-*/
+/* Estilo para el botón "Volver a Inicio" */
+.back-to-home-link { /* Esta clase es para el contenedor del enlace */
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: center;
+}
 
-/*
-.logout-button {
-    background-color: #dc3545;
+.back-to-home-link .back-button { /* Esta clase es para el elemento Link/Button dentro del contenedor */
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #6c757d;
     color: white;
-    padding: 10px 20px;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
+    border-radius: 4px;
+    text-decoration: none;
     transition: background-color 0.3s ease;
-    margin-top: 15px;
 }
 
-.logout-button:hover {
-    background-color: #c82333;
+.back-to-home-link .back-button:hover {
+    background-color: #5a6268;
 }
-*/
+
+/* Media Queries para Responsive Design (opcional, pero buena práctica) */
+@media (max-width: 768px) {
+    .user-profile-card {
+        padding: 30px 20px;
+    }
+    .user-profile-card h2 {
+        font-size: 28px;
+    }
+    .profile-details h3,
+    .profile-actions h3 {
+        font-size: 20px;
+    }
+}

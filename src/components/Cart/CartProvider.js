@@ -1,6 +1,7 @@
-// src/components/Cart/CartContext.js
+// src/main/js/src/components/Cart/CartContext.js
+
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
-import axios from 'axios'; // Importa axios
+import api from '../../services/api'; // <<< ¡IMPORTAR LA INSTANCIA 'api' CONFIGURADA!
 
 const CartContext = createContext();
 
@@ -11,46 +12,36 @@ export const CartProvider = ({ children }) => {
     const [loadingCart, setLoadingCart] = useState(true);
     const [cartError, setCartError] = useState(null);
 
-    // MODIFICADO: URL base de tu backend para desarrollo local
-    const API_BASE_URL = 'http://localhost:8080/api'; // <--- ¡CORREGIDO!
-
-    // Función para obtener los headers de autorización (incluyendo el token JWT)
-    const getAuthHeaders = useCallback(() => {
-        const token = localStorage.getItem('jwtToken');
-        return token ? { Authorization: `Bearer ${token}` } : {};
-    }, []); // Sin dependencias, ya que localStorage es global
-
     // Función para cargar el carrito desde el backend
     const fetchCart = useCallback(async () => {
         setLoadingCart(true);
         setCartError(null);
 
-        // Solo intentar cargar el carrito si hay un token JWT disponible
-        const headers = getAuthHeaders();
-        if (Object.keys(headers).length === 0) { // Si no hay token, no hay headers de auth
-            setCartItems([]); // Carrito vacío si no hay usuario autenticado
+        // <<< ¡ESTA ES LA LÍNEA CRÍTICA PARA EVITAR EL BUCLYE! >>>
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            // Si no hay token, el usuario no está logueado o su token expiró.
+            // No intentamos cargar el carrito para evitar el 401 y el bucle.
+            setCartItems([]); // Carrito vacío si no hay autenticación
             setLoadingCart(false);
-            return; // Salir si no hay token para evitar 401 innecesarios
+            console.log("No hay token JWT en localStorage. El carrito no se cargará automáticamente.");
+            return; // Salir de la función aquí
         }
+        // <<< FIN DE LA LÍNEA CRÍTICA >>>
 
         try {
-            // Usa axios.get para la solicitud al carrito
-            const response = await axios.get(`${API_BASE_URL}/cart`, {
-                headers: headers, // Envía los headers de autorización
-            });
+            // Usa 'api' para la solicitud. El token se añade automáticamente por el interceptor.
+            const response = await api.get('/cart');
 
-            // axios envuelve la respuesta en .data
-            setCartItems(response.data);
+            // Asumo que response.data es tu CartResponse completo y los items están dentro.
+            setCartItems(response.data.items || []); // Si no hay items, asegura un array vacío
         } catch (error) {
-            console.error("Error al cargar el carrito:", error);
-            // Manejo de errores específicos de Axios
-            if (axios.isAxiosError(error) && error.response) {
-                // Si el error es 401/403, puede ser que el token haya expirado o sea inválido
-                if (error.response.status === 401 || error.response.status === 403) {
-                    setCartError("Sesión expirada o no autorizada. Por favor, inicia sesión de nuevo.");
-                    // Opcional: podrías forzar un logout aquí para limpiar el estado
-                } else {
-                    setCartError(error.response.data.message || 'Error al cargar tu carrito desde el servidor.');
+            console.error("Error al cargar el carrito en CartProvider:", error);
+            // El interceptor de api.js ya maneja el 401. Aquí puedes manejar otros errores.
+            if (error.response) {
+                // Solo muestra error si no es un 401, ya que el 401 ya gatilla la redirección.
+                if (error.response.status !== 401) {
+                    setCartError(error.response.data.message || 'Error al cargar tu carrito.');
                 }
             } else {
                 setCartError("No pudimos cargar tu carrito. Verifica tu conexión.");
@@ -58,34 +49,38 @@ export const CartProvider = ({ children }) => {
         } finally {
             setLoadingCart(false);
         }
-    }, [getAuthHeaders, API_BASE_URL]); // Dependencias para useCallback
+    }, []); // Ya no necesitas dependencias como getAuthHeaders
 
     // Cargar el carrito al montar el proveedor
     useEffect(() => {
         fetchCart();
     }, [fetchCart]); // Asegura que fetchCart se llama solo cuando cambia (debido a useCallback)
 
-    // --- Funciones para interactuar con el carrito (también convertidas a Axios) ---
+    // --- Funciones para interactuar con el carrito ---
 
-    const addItem = async (product, quantity = 1) => {
+    // Asegúrate de que el componente que llama a addItem le pase sucursalId
+    const addItem = async (product, quantity = 1, sucursalId) => {
         setCartError(null);
+        // También se puede añadir una comprobación aquí para addItem si el token es nulo antes de intentar
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            setCartError("Necesitas iniciar sesión para añadir productos al carrito.");
+            return false;
+        }
         try {
-            const headers = getAuthHeaders();
-            if (Object.keys(headers).length === 0) {
-                setCartError("Necesitas iniciar sesión para añadir productos al carrito.");
-                return false;
-            }
+            // El backend AddToCartRequest espera: productoId, quantity, sucursalId
+            const response = await api.post('/cart/add', {
+                productoId: product.id, // Nombre del campo como en el DTO del backend
+                quantity: quantity,
+                sucursalId: sucursalId // Necesario para que el backend lo identifique
+            });
 
-            const response = await axios.post(`${API_BASE_URL}/cart/add`,
-                { productId: product.id, quantity, price: product.precio },
-                { headers: headers }
-            );
-
-            await fetchCart(); // Recargar el carrito después de la operación exitosa
+            // Actualizar el estado del carrito con la respuesta actualizada del backend
+            setCartItems(response.data.items || []);
             return true;
         } catch (error) {
             console.error("Error al añadir item:", error);
-            if (axios.isAxiosError(error) && error.response) {
+            if (error.response) {
                 setCartError(`No se pudo añadir "${product.nombre}": ${error.response.data.message || error.message}`);
             } else {
                 setCartError(`No se pudo añadir "${product.nombre}": ${error.message}`);
@@ -96,21 +91,15 @@ export const CartProvider = ({ children }) => {
 
     const removeItem = async (cartItemId) => {
         setCartError(null);
+        const token = localStorage.getItem('jwtToken');
+        if (!token) { return false; } // No intentar si no hay token
         try {
-            const headers = getAuthHeaders();
-            if (Object.keys(headers).length === 0) {
-                setCartError("Necesitas iniciar sesión para modificar el carrito.");
-                return false;
-            }
-            await axios.delete(`${API_BASE_URL}/cart/remove/${cartItemId}`, {
-                headers: headers,
-            });
-
+            await api.delete(`/cart/remove/${cartItemId}`);
             await fetchCart();
             return true;
         } catch (error) {
             console.error("Error al eliminar item:", error);
-            if (axios.isAxiosError(error) && error.response) {
+            if (error.response) {
                 setCartError(`No se pudo eliminar el item: ${error.response.data.message || error.message}`);
             } else {
                 setCartError(`No se pudo eliminar el item: ${error.message}`);
@@ -124,22 +113,15 @@ export const CartProvider = ({ children }) => {
         if (newQuantity <= 0) {
             return removeItem(cartItemId);
         }
+        const token = localStorage.getItem('jwtToken');
+        if (!token) { return false; } // No intentar si no hay token
         try {
-            const headers = getAuthHeaders();
-            if (Object.keys(headers).length === 0) {
-                setCartError("Necesitas iniciar sesión para modificar el carrito.");
-                return false;
-            }
-            const response = await axios.put(`${API_BASE_URL}/cart/update-quantity`,
-                { cartItemId, quantity: newQuantity },
-                { headers: headers }
-            );
-
+            await api.put(`/cart/update/${cartItemId}?quantity=${newQuantity}`);
             await fetchCart();
             return true;
         } catch (error) {
             console.error("Error al actualizar cantidad:", error);
-            if (axios.isAxiosError(error) && error.response) {
+            if (error.response) {
                 setCartError(`No se pudo actualizar la cantidad: ${error.response.data.message || error.message}`);
             } else {
                 setCartError(`No se pudo actualizar la cantidad: ${error.message}`);
@@ -150,21 +132,15 @@ export const CartProvider = ({ children }) => {
 
     const clearCart = async () => {
         setCartError(null);
+        const token = localStorage.getItem('jwtToken');
+        if (!token) { return false; } // No intentar si no hay token
         try {
-            const headers = getAuthHeaders();
-            if (Object.keys(headers).length === 0) {
-                setCartError("Necesitas iniciar sesión para vaciar el carrito.");
-                return false;
-            }
-            await axios.delete(`${API_BASE_URL}/cart/clear`, {
-                headers: headers,
-            });
-
+            await api.post('/cart/clear');
             await fetchCart();
             return true;
         } catch (error) {
             console.error("Error al vaciar carrito:", error);
-            if (axios.isAxiosError(error) && error.response) {
+            if (error.response) {
                 setCartError(`No se pudo vaciar el carrito: ${error.response.data.message || error.message}`);
             } else {
                 setCartError(`No se pudo vaciar el carrito: ${error.message}`);
@@ -175,11 +151,11 @@ export const CartProvider = ({ children }) => {
 
     // Cálculos basados en el estado local del carrito
     const getCartTotal = () => {
-        return cartItems.reduce((total, item) => total + (item.precio * item.cantidad), 0);
+        return cartItems.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
     };
 
     const getTotalItems = () => {
-        return cartItems.reduce((total, item) => total + item.cantidad, 0);
+        return cartItems.reduce((total, item) => total + item.quantity, 0);
     };
 
     const value = {

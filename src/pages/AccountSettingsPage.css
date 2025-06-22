@@ -1,0 +1,173 @@
+/* src/pages/AccountSettingsPage.css */
+
+.account-settings-page-container {
+    display: flex;
+    justify-content: center;
+    /* align-items: center;  -> Cambiado a flex-start para que el contenido empiece desde arriba y no se centre verticalmente */
+    align-items: flex-start;
+
+    /* Si el header y footer se ocultan en esta página, 100vh es correcto.
+       Si se muestran (como sugiere tu App.js), deberías ajustar para descontar su altura.
+       Mantengo 100vh según tu comentario, asumiendo que el layout lo justifica. */
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.account-settings-card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 550px; /* Ancho máximo para la tarjeta de configuración */
+    text-align: center;
+}
+
+.account-settings-card h2 {
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 28px;
+}
+
+.settings-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #fcfcfc;
+    text-align: left; /* Alinea el contenido dentro de la sección a la izquierda */
+}
+
+.settings-section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #555;
+    font-size: 22px;
+    text-align: center; /* Centra el título de la sección */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho/alto */
+}
+
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.settings-button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+.settings-button.primary {
+    background-color: #007bff; /* Azul */
+    color: white;
+}
+
+.settings-button.primary:hover {
+    background-color: #0056b3;
+}
+
+.settings-button.secondary {
+    background-color: #28a745; /* Verde */
+    color: white;
+}
+
+.settings-button.secondary:hover {
+    background-color: #218838;
+}
+
+/* Mensajes de feedback (éxito/error) */
+.settings-message {
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.settings-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.settings-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Enlaces al final de la tarjeta para navegación (ej. Volver al Perfil, Volver a Inicio) */
+.back-to-profile-link,
+.back-to-home-link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.back-to-profile-link .back-button,
+.back-to-home-link .back-button {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    margin: 5px; /* Espacio entre los botones si hay varios */
+}
+
+.back-to-profile-link .back-button:hover,
+.back-to-home-link .back-button:hover {
+    background-color: #5a6268;
+}
+
+/* Media Queries para Responsive Design (opcional, pero buena práctica) */
+@media (max-width: 768px) {
+    .account-settings-card {
+        padding: 30px 20px;
+    }
+    .account-settings-card h2 {
+        font-size: 24px;
+    }
+    .settings-section {
+        padding: 15px;
+    }
+    .settings-section h3 {
+        font-size: 20px;
+    }
+    .form-group input {
+        padding: 8px;
+    }
+    .settings-button {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+}

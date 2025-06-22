@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import FilterSidebar from '../components/FilterSidebar/FilterSidebar';
-import './ProductListPage.css';
+import './ProductListPage.css'; // Asegúrate de que exista este archivo para tus estilos de página de producto
 import axios from 'axios';
 
 function ProductListPage() {
@@ -130,7 +130,6 @@ function ProductListPage() {
                             onChange={handleSearchChange}
                             className="search-input"
                         />
-                        {/* Botón de borrar 'X', visible solo si hay texto en searchTerm */}
                         {searchTerm && (
                             <button
                                 type="button"
