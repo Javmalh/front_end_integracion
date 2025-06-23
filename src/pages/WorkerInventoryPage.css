@@ -1,0 +1,363 @@
+/* src/pages/WorkerInventoryPage.css */
+
+/* Contenedor principal de la página del inventario del trabajador */
+.worker-inventory-page {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: calc(100vh - 150px);
+    background-color: #f0f2f5;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Estilos para el contenido principal (donde se muestran los productos) */
+.main-content.products-content {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
+    margin-left: 20px;
+}
+
+/* Título del inventario */
+.products-content h2 {
+    margin-bottom: 25px;
+    color: #282c34;
+    font-size: 30px;
+}
+
+/* Controles de búsqueda y filtros */
+.product-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Espacio entre elementos flex */
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Permite que los elementos salten de línea si no hay espacio */
+}
+
+/* Contenedor para la barra de búsqueda con el botón de borrar */
+.search-input-container {
+    position: relative;
+    /* Usamos flex: <flex-grow> <flex-shrink> <flex-basis> */
+    flex: 1 1 250px; /* Intenta ocupar 250px, pero puede crecer o encogerse */
+    max-width: 500px; /* Puedes ajustar este valor si quieres un límite superior para el ancho */
+}
+
+/* Estilos para el input de búsqueda */
+.search-input {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    width: 100%; /* El input ocupa el 100% del contenedor */
+    box-sizing: border-box;
+    padding-right: 40px; /* Deja espacio para el botón de borrar */
+}
+
+/* Estilos para el selector de sucursal */
+.sucursal-select {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    flex: 0 0 250px; /* Para que el select mantenga su ancho */
+    box-sizing: border-box;
+}
+
+/* Estilos de enfoque para input y select */
+.search-input:focus, .sucursal-select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Botón para limpiar la búsqueda ESPECÍFICO DE WORKERINVENTORYPAGE */
+.clear-worker-search-button { /* <-- ¡CLASE RENOMBRADA Y ESPECÍFICA! */
+    position: absolute;
+    right: 10px; /* Ajusta la posición a la derecha */
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1.8rem; /* <--- AJUSTA ESTE VALOR PARA EL TAMAÑO DE LA "X" EN WORKERINVENTORYPAGE */
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1; /* Para centrar la "X" verticalmente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clear-worker-search-button:hover { /* <-- ¡CLASE RENOMBRADA! */
+    color: #333;
+}
+
+
+/* Estilos generales para botones de acción (Buscar, Reintentar) */
+.search-controls button,
+.retry-button {
+    background-color: #007bff; /* Azul primario, asumiendo este es el color del carrito */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-controls button:hover,
+.retry-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+}
+
+/* Estilos ESPECÍFICOS para el botón "Limpiar Filtros" (Rojo) */
+.clear-filters-button {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.clear-filters-button:hover {
+    background-color: #c82333; /* Rojo más oscuro al pasar el ratón */
+}
+
+
+/* Estilos específicos para el botón "Añadir Nuevo Producto" (verde) */
+.add-product-button {
+    background-color: #28a745; /* Verde distinto para acción positiva (añadir) */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-product-button:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el ratón */
+}
+
+/* Estilos de la tabla de inventario */
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Estilos para encabezados y celdas de la tabla */
+.inventory-table th,
+.inventory-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+/* Estilos para los encabezados de la tabla */
+.inventory-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #333;
+    text-transform: uppercase;
+}
+
+/* Estilos para filas pares en el cuerpo de la tabla */
+.inventory-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Efecto hover para filas de la tabla */
+.inventory-table tbody tr:hover {
+    background-color: #e9e9e9;
+}
+
+/* Nueva celda para los botones de acción en la tabla */
+.product-actions-cell {
+    text-align: center; /* Centra los botones en la celda */
+    white-space: nowrap; /* Evita que los botones se envuelvan */
+}
+
+/* Estilos para los botones de acción (Editar, Borrar) dentro de la tabla */
+.action-button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0 5px; /* Espacio entre botones */
+}
+
+.edit-button {
+    background-color: #ffc107; /* Amarillo para editar */
+    color: #333;
+}
+
+.edit-button:hover {
+    background-color: #e0a800;
+}
+
+.delete-button {
+    background-color: #dc3545; /* Rojo para borrar */
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+
+/* Contenedor para acciones del trabajador (ej. botón añadir) */
+.worker-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Estilos para mensajes de estado (carga, error, no productos) */
+.loading-message, .error-message, .no-products-message {
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.loading-message {
+    background-color: #e0f7fa;
+    color: #007bff;
+    border: 1px solid #007bff;
+}
+
+.error-message {
+    background-color: #ffe3e6;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.no-products-message {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+}
+
+/* Estilos adicionales para tarjetas de error si se usan */
+.error-card {
+    border-color: #dc3545;
+    color: #dc3545;
+    background-color: #ffe3e6;
+}
+
+/* Estilos para el botón de reintento (si se implementa) */
+.retry-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.retry-button:hover {
+    background-color: #0056b3;
+}
+
+/* --- Estilos para el Modal --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px; /* Ancho máximo del modal */
+    position: relative;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #282c34;
+    text-align: center;
+}
+
+.modal-content form label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #555;
+}
+
+.modal-content form input[type="text"],
+.modal-content form input[type="number"],
+.modal-content form textarea {
+    width: calc(100% - 20px); /* Ajusta para padding */
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Incluye padding y borde en el ancho */
+}
+
+.modal-content form input:focus,
+.modal-content form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.button-primary, .button-secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-primary:hover {
+    background-color: #0056b3;
+}
+
+.button-secondary {
+    background-color: #6c757d; /* Gris para cancelar */
+    color: white;
+}
+
+.button-secondary:hover {
+    background-color: #5a6268;
+}

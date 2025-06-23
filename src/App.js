@@ -1,5 +1,8 @@
+// src/App.js
+
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+// Elimina BrowserRouter as Router de aquí, ya que se usa en index.js
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header/Header';
 import HomePage from './pages/HomePage';
 import CartPage from './pages/CartPage';
@@ -12,6 +15,7 @@ import WorkerDashboardPage from './pages/WorkerDashboardPage';
 import Sucursales from "./pages/Sucursales";
 import ProductListPage from './pages/ProductListPage';
 import AccountSettingsPage from './pages/AccountSettingsPage';
+import WorkerInventoryPage from './pages/WorkerInventoryPage'; // Importación de la vista de inventario
 
 import './App.css';
 
@@ -90,6 +94,7 @@ function App() {
 
     return (
         <CartProvider>
+            {/* ELIMINA <Router> de aquí, ya que está en index.js */}
             <ScrollToTop /> {/* Asegura que la página se desplace al inicio en cada cambio de ruta */}
             <div className="App">
                 {shouldShowHeaderAndFooter && (
@@ -113,6 +118,8 @@ function App() {
                         {isLoggedIn ? (
                             <>
                                 <Route path="/worker-dashboard" element={<WorkerDashboardPage />} />
+                                {/* NUEVA RUTA PARA EL INVENTARIO DEL TRABAJADOR */}
+                                <Route path="/worker-inventory" element={<WorkerInventoryPage />} />
                                 {/* Se pasa la función onProfileUpdate a los componentes de perfil y configuración */}
                                 <Route
                                     path="/profile"
@@ -128,6 +135,7 @@ function App() {
                             <>
                                 <Route path="/profile" element={<RedirectToLogin />} />
                                 <Route path="/worker-dashboard" element={<RedirectToLogin />} />
+                                <Route path="/worker-inventory" element={<RedirectToLogin />} /> {/* Proteger también esta ruta */}
                                 <Route path="/settings" element={<RedirectToLogin />} />
                             </>
                         )}
@@ -137,6 +145,7 @@ function App() {
                 </main>
                 {shouldShowHeaderAndFooter && <Footer />}
             </div>
+            {/* ELIMINA EL CIERRE DE <Router> de aquí también */}
         </CartProvider>
     );
 }

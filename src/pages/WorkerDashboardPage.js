@@ -1,9 +1,9 @@
-// src/pages/WorkerDashboardPage.js
+// src/main/js/src/pages/WorkerDashboardPage.js
 
 import React from 'react';
+import { Link } from 'react-router-dom'; // <-- ¡Importa Link de react-router-dom!
 import './WorkerDashboardPage.css'; // Importa el CSS específico para esta página
 
-// Este componente representará el "Homepage Laboral" para los trabajadores
 function WorkerDashboardPage() {
     return (
         <div className="worker-dashboard-container">
@@ -15,7 +15,8 @@ function WorkerDashboardPage() {
                     <h3>Gestión de Inventario</h3>
                     <p>Consulta y actualiza el stock de productos.</p>
                     <ul>
-                        <li><a href="/worker/inventory">Ver Inventario</a></li>
+                        {/* ¡CORRECCIÓN AQUÍ! Usar <Link> y la ruta correcta '/worker-inventory' */}
+                        <li><Link to="/worker-inventory">Ver Inventario</Link></li>
                         {/* <li><a href="/worker/add-product">Añadir Nuevo Producto</a></li> */}
                     </ul>
                 </div>
@@ -29,19 +30,6 @@ function WorkerDashboardPage() {
                         {/* <li><a href="/worker/orders/status">Cambiar Estado de Pedido</a></li> */}
                     </ul>
                 </div>
-
-                {/* Puedes añadir más secciones aquí según las necesidades */}
-                {/* <div className="dashboard-section">
-          <h3>Reportes y Estadísticas</h3>
-          <p>Accede a informes de ventas y rendimiento.</p>
-          <ul>
-            <li><a href="/worker/reports">Ver Reportes</a></li>
-          </ul>
-        </div> */}
-
-                <button className="dashboard-logout-button" onClick={() => alert('Simulando cierre de sesión de trabajador.')}>
-                    Cerrar Sesión de Trabajador
-                </button>
             </div>
         </div>
     );

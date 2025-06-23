@@ -2,10 +2,9 @@
 
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import api from '../../services/api'; // <<< ¡IMPORTAR LA INSTANCIA 'api' CONFIGURADA!
-
 const CartContext = createContext();
 
-export const useCart = () => useContext(CartContext);
+export const useCart = () => useContext(CartContext); // <--- ¡ESTA ES LA LÍNEA MARCADA!
 
 export const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([]);
@@ -17,29 +16,20 @@ export const CartProvider = ({ children }) => {
         setLoadingCart(true);
         setCartError(null);
 
-        // <<< ¡ESTA ES LA LÍNEA CRÍTICA PARA EVITAR EL BUCLYE! >>>
         const token = localStorage.getItem('jwtToken');
         if (!token) {
-            // Si no hay token, el usuario no está logueado o su token expiró.
-            // No intentamos cargar el carrito para evitar el 401 y el bucle.
-            setCartItems([]); // Carrito vacío si no hay autenticación
+            setCartItems([]);
             setLoadingCart(false);
             console.log("No hay token JWT en localStorage. El carrito no se cargará automáticamente.");
-            return; // Salir de la función aquí
+            return;
         }
-        // <<< FIN DE LA LÍNEA CRÍTICA >>>
 
         try {
-            // Usa 'api' para la solicitud. El token se añade automáticamente por el interceptor.
             const response = await api.get('/cart');
-
-            // Asumo que response.data es tu CartResponse completo y los items están dentro.
-            setCartItems(response.data.items || []); // Si no hay items, asegura un array vacío
+            setCartItems(response.data.items || []);
         } catch (error) {
             console.error("Error al cargar el carrito en CartProvider:", error);
-            // El interceptor de api.js ya maneja el 401. Aquí puedes manejar otros errores.
             if (error.response) {
-                // Solo muestra error si no es un 401, ya que el 401 ya gatilla la redirección.
                 if (error.response.status !== 401) {
                     setCartError(error.response.data.message || 'Error al cargar tu carrito.');
                 }
@@ -49,33 +39,25 @@ export const CartProvider = ({ children }) => {
         } finally {
             setLoadingCart(false);
         }
-    }, []); // Ya no necesitas dependencias como getAuthHeaders
+    }, []);
 
-    // Cargar el carrito al montar el proveedor
     useEffect(() => {
         fetchCart();
-    }, [fetchCart]); // Asegura que fetchCart se llama solo cuando cambia (debido a useCallback)
+    }, [fetchCart]);
 
-    // --- Funciones para interactuar con el carrito ---
-
-    // Asegúrate de que el componente que llama a addItem le pase sucursalId
     const addItem = async (product, quantity = 1, sucursalId) => {
         setCartError(null);
-        // También se puede añadir una comprobación aquí para addItem si el token es nulo antes de intentar
         const token = localStorage.getItem('jwtToken');
         if (!token) {
             setCartError("Necesitas iniciar sesión para añadir productos al carrito.");
             return false;
         }
         try {
-            // El backend AddToCartRequest espera: productoId, quantity, sucursalId
             const response = await api.post('/cart/add', {
-                productoId: product.id, // Nombre del campo como en el DTO del backend
+                productoId: product.id,
                 quantity: quantity,
-                sucursalId: sucursalId // Necesario para que el backend lo identifique
+                sucursalId: sucursalId
             });
-
-            // Actualizar el estado del carrito con la respuesta actualizada del backend
             setCartItems(response.data.items || []);
             return true;
         } catch (error) {
@@ -92,7 +74,7 @@ export const CartProvider = ({ children }) => {
     const removeItem = async (cartItemId) => {
         setCartError(null);
         const token = localStorage.getItem('jwtToken');
-        if (!token) { return false; } // No intentar si no hay token
+        if (!token) { return false; }
         try {
             await api.delete(`/cart/remove/${cartItemId}`);
             await fetchCart();
@@ -114,7 +96,7 @@ export const CartProvider = ({ children }) => {
             return removeItem(cartItemId);
         }
         const token = localStorage.getItem('jwtToken');
-        if (!token) { return false; } // No intentar si no hay token
+        if (!token) { return false; }
         try {
             await api.put(`/cart/update/${cartItemId}?quantity=${newQuantity}`);
             await fetchCart();
@@ -133,7 +115,7 @@ export const CartProvider = ({ children }) => {
     const clearCart = async () => {
         setCartError(null);
         const token = localStorage.getItem('jwtToken');
-        if (!token) { return false; } // No intentar si no hay token
+        if (!token) { return false; }
         try {
             await api.post('/cart/clear');
             await fetchCart();
@@ -149,7 +131,6 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    // Cálculos basados en el estado local del carrito
     const getCartTotal = () => {
         return cartItems.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
     };

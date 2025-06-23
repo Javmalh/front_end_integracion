@@ -1,10 +1,11 @@
+// src/main/js/src/components/Header/Header.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../Cart/CartProvider';
-
+import { useCart } from '../Cart/CartProvider'; // Verifica esta ruta
 import './Header.css';
 import logo from '../../assets/ferremax-logo.png';
-import sucursalesData from '../../data/sucursalesData'; // Importa los datos de las sucursales
+import sucursalesData from '../../data/sucursalesData';
 
 function Header({ isLoggedIn, userName, onLogout, userRole }) {
     const { getTotalItems } = useCart();
@@ -12,25 +13,26 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
 
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-
-    // Estado para la sucursal seleccionada en el botón
     const [selectedSucursalName, setSelectedSucursalName] = useState('Sucursales');
-
-    // Estado: Para controlar la visibilidad del menú de sucursales
     const [isSucursalesDropdownOpen, setIsSucursalesDropdownOpen] = useState(false);
+    const [isManagementDropdownOpen, setIsManagementDropdownOpen] = useState(false);
 
     const closeProfileDropdown = () => {
         setIsProfileDropdownOpen(false);
     };
 
+    const closeManagementDropdown = () => {
+        setIsManagementDropdownOpen(false);
+    };
+
     const handleLogout = () => {
         onLogout();
         closeProfileDropdown();
+        closeManagementDropdown();
     };
 
     const handleSearch = (e) => {
         e.preventDefault();
-
         if (searchTerm.trim()) {
             navigate(`/productos?search=${encodeURIComponent(searchTerm.trim())}`);
         } else {
@@ -43,12 +45,11 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
     };
 
     const handleSucursalClick = (sucursal) => {
-        setSelectedSucursalName(sucursal.title); // Actualiza el nombre de la sucursal en el botón
-        setIsSucursalesDropdownOpen(false); // Cierra el dropdown inmediatamente
-        navigate('/'); // Navega a la página de inicio (según tu implementación actual)
+        setSelectedSucursalName(sucursal.title);
+        setIsSucursalesDropdownOpen(false);
+        navigate('/');
     };
 
-    // Para cerrar los dropdowns al hacer clic fuera
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (!event.target.closest('.profile-dropdown-container')) {
@@ -56,6 +57,9 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
             }
             if (!event.target.closest('.sucursales-dropdown-container')) {
                 setIsSucursalesDropdownOpen(false);
+            }
+            if (!event.target.closest('.management-dropdown-container')) {
+                setIsManagementDropdownOpen(false);
             }
         };
 
@@ -126,19 +130,38 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
                             <>
                                 {userRole === 'WORKER' ? (
                                     <>
-                                        <li>
-                                            <Link to="/worker-dashboard" className="header-button-base nav-button">
-                                                Panel Trabajador
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <button onClick={onLogout} className="header-button-base logout-button">
-                                                Cerrar Sesión
+                                        {/* Menú de Gestión para WORKER */}
+                                        <li
+                                            className="management-dropdown-container"
+                                            onMouseEnter={() => setIsManagementDropdownOpen(true)}
+                                            onMouseLeave={() => setIsManagementDropdownOpen(false)}
+                                        >
+                                            <button className="header-button-base nav-button management-button">
+                                                Panel de Gestión
                                             </button>
+                                            {isManagementDropdownOpen && (
+                                                <div className="management-dropdown-menu">
+                                                    <Link
+                                                        to="/worker-dashboard"
+                                                        className="dropdown-item"
+                                                        onClick={closeManagementDropdown}
+                                                    >
+                                                        Dashboard
+                                                    </Link>
+                                                    <Link
+                                                        to="/worker-inventory"
+                                                        className="dropdown-item"
+                                                        onClick={closeManagementDropdown}
+                                                    >
+                                                        Ver Inventario
+                                                    </Link>
+                                                </div>
+                                            )}
                                         </li>
                                     </>
                                 ) : (
                                     <>
+                                        {/* Botón de Carrito para usuarios NO WORKER (clientes) */}
                                         <li>
                                             <Link to="/cart" className="header-button-base cart-button">
                                                 🛒 Carrito
@@ -147,18 +170,25 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
                                                 )}
                                             </Link>
                                         </li>
-                                        <li className="profile-dropdown-container"
-                                            onMouseEnter={() => setIsProfileDropdownOpen(true)}
-                                            onMouseLeave={() => setIsProfileDropdownOpen(false)}
-                                        >
-                                            <button
-                                                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                                                className="header-button-base nav-button profile-dropdown-button"
-                                            >
-                                                Perfil
-                                            </button>
-                                            {isProfileDropdownOpen && (
-                                                <div className="profile-dropdown-menu">
+                                    </>
+                                )}
+
+                                {/* ESTE ES EL BLOQUE DEL PERFIL/CERRAR SESIÓN. SE MUESTRA PARA TODOS LOS LOGUEADOS. */}
+                                {/* Las opciones del desplegable variarán según el rol. */}
+                                <li className="profile-dropdown-container"
+                                    onMouseEnter={() => setIsProfileDropdownOpen(true)}
+                                    onMouseLeave={() => setIsProfileDropdownOpen(false)}
+                                >
+                                    <button
+                                        onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                                        className="header-button-base nav-button profile-dropdown-button"
+                                    >
+                                        {userName || 'Perfil'} {/* Muestra el nombre de usuario */}
+                                    </button>
+                                    {isProfileDropdownOpen && (
+                                        <div className="profile-dropdown-menu">
+                                            {userRole !== 'WORKER' && ( // Solo muestra Mis Datos y Cuenta si NO es WORKER
+                                                <>
                                                     <Link
                                                         to="/profile"
                                                         className="dropdown-item"
@@ -166,29 +196,29 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
                                                     >
                                                         Mis Datos
                                                     </Link>
-                                                    {/* >>>>>>>>> NUEVA OPCIÓN 'CUENTA' AQUÍ <<<<<<<<< */}
                                                     <Link
-                                                        to="/settings" // Ruta a la página de configuración de cuenta
+                                                        to="/settings"
                                                         className="dropdown-item"
                                                         onClick={closeProfileDropdown}
                                                     >
                                                         Cuenta
                                                     </Link>
-                                                    {/* <<<<<<<<< FIN NUEVA OPCIÓN <<<<<<<<< */}
-                                                    <button
-                                                        onClick={handleLogout}
-                                                        className="dropdown-item logout-dropdown-item"
-                                                    >
-                                                        Cerrar Sesión
-                                                    </button>
-                                                </div>
+                                                </>
                                             )}
-                                        </li>
-                                    </>
-                                )}
+                                            {/* El botón de Cerrar Sesión SIEMPRE aparece para usuarios logueados en este menú */}
+                                            <button
+                                                onClick={handleLogout}
+                                                className="dropdown-item logout-dropdown-item"
+                                            >
+                                                Cerrar Sesión
+                                            </button>
+                                        </div>
+                                    )}
+                                </li>
                             </>
                         ) : (
                             <>
+                                {/* Opciones para usuarios no logueados */}
                                 <li>
                                     <Link to="/login" className="header-button-base nav-button">
                                         Iniciar Sesión

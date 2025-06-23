@@ -3,9 +3,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // Importa axios
 import './FilterSidebar.css';
 
+// onFilterChange es la única prop necesaria del padre.
+// FilterSidebar maneja su propio estado de categorías seleccionadas.
 function FilterSidebar({ onFilterChange }) {
     const [availableCategories, setAvailableCategories] = useState([]); // Estado para las categorías obtenidas de la API
-    const [selectedFilters, setSelectedFilters] = useState([]); // Estado para los filtros que el usuario ha seleccionado
+    const [selectedFilters, setSelectedFilters] = useState([]); // Estado interno para los filtros que el usuario ha seleccionado
     const [loadingCategories, setLoadingCategories] = useState(true);
     const [errorCategories, setErrorCategories] = useState(null);
 
@@ -15,6 +17,8 @@ function FilterSidebar({ onFilterChange }) {
             setLoadingCategories(true);
             setErrorCategories(null);
             try {
+                // Se asume que api.js ya maneja la baseURL y el token si es necesario
+                // Por ahora, lo dejo con axios.get directo a localhost:8080/api/products/categories
                 const response = await axios.get('http://localhost:8080/api/products/categories'); // <--- URL del endpoint de categorías
                 setAvailableCategories(response.data);
             } catch (err) {
@@ -27,21 +31,30 @@ function FilterSidebar({ onFilterChange }) {
         fetchCategories();
     }, []); // Se ejecuta una sola vez al montar el componente
 
+    // ¡NUEVO useEffect para notificar al padre cuando selectedFilters cambie!
+    useEffect(() => {
+        // Solo llama a onFilterChange si el componente está montado y selectedFilters ya tiene un valor inicial
+        // Evita la llamada inicial si no es deseada, aunque en este caso, la primera llamada de onFilterChange([])
+        // es útil para que el padre sepa el estado inicial.
+        onFilterChange(selectedFilters);
+    }, [selectedFilters, onFilterChange]); // Dependencias: se ejecuta cada vez que selectedFilters o onFilterChange cambian
+
     // Maneja el cambio de los checkboxes de filtro
     const handleCheckboxChange = (filter) => {
-        let newFilters;
-        if (selectedFilters.includes(filter)) {
-            newFilters = selectedFilters.filter(f => f !== filter);
-        } else {
-            newFilters = [...selectedFilters, filter];
-        }
-        setSelectedFilters(newFilters);
-        onFilterChange(newFilters); // Llama a la función del padre para actualizar los productos
+        setSelectedFilters(prevFilters => {
+            // Calcula los nuevos filtros inmutablemente
+            if (prevFilters.includes(filter)) {
+                return prevFilters.filter(f => f !== filter);
+            } else {
+                return [...prevFilters, filter];
+            }
+        });
+        // NOTA: Ya NO llamamos a onFilterChange aquí. Lo hace el useEffect.
     };
 
+    // Maneja el clic en el botón "Limpiar Filtros" del sidebar
     const handleClearFilters = () => {
-        setSelectedFilters([]);
-        onFilterChange([]);
+        setSelectedFilters([]); // Limpia el estado interno. El useEffect se encargará de notificar al padre.
     };
 
     return (
@@ -60,8 +73,8 @@ function FilterSidebar({ onFilterChange }) {
                             <label>
                                 <input
                                     type="checkbox"
-                                    checked={selectedFilters.includes(category)}
-                                    onChange={() => handleCheckboxChange(category)}
+                                    checked={selectedFilters.includes(category)} // Controla el estado del checkbox
+                                    onChange={() => handleCheckboxChange(category)} // Llama al manejador
                                 />
                                 {category}
                             </label>
@@ -69,6 +82,7 @@ function FilterSidebar({ onFilterChange }) {
                     ))}
                 </ul>
             )}
+            {/* El botón de limpiar filtros dentro del sidebar */}
             <button className="clear-filters-button" onClick={handleClearFilters}>
                 Limpiar Filtros
             </button>
