@@ -1,50 +1,50 @@
-// src/components/CartItem.js
+// src/components/Cart/CartItem.js
 import React from 'react';
-import { useCart } from './CartProvider';
-import './CartItem.css';
+import './CartItem.css'; // Asegúrate de tener este CSS
 
-function CartItem({ item }) {
-    const { updateQuantity, removeItem, loadingCart } = useCart();
+// `item` contendrá { productId, product: {id, nombre, precio}, branchId, branch: {id, nombre}, quantity }
+function CartItem({ item, removeItem, updateItemQuantity }) {
+    const handleRemove = () => {
+        removeItem(item.productId, item.branchId);
+    };
 
-    const handleQuantityChange = async (e) => {
+    const handleQuantityChange = (e) => {
         const newQuantity = parseInt(e.target.value);
-        if (!isNaN(newQuantity) && newQuantity >= 0) {
-            // 'item.id' es el ID del item del carrito, no del producto
-            await updateQuantity(item.id, newQuantity);
+        if (!isNaN(newQuantity)) { // Asegura que es un número válido
+            updateItemQuantity(item.productId, item.branchId, newQuantity);
         }
     };
 
-    const handleIncrease = async () => {
-        await updateQuantity(item.id, item.cantidad + 1);
-    };
-
-    const handleDecrease = async () => {
-        await updateQuantity(item.id, item.cantidad - 1);
-    };
-
-    const itemSubtotal = (item.precio * item.cantidad).toFixed(2);
-
     return (
-        <div className="cart-item">
-            <img src={item.imagen || 'https://via.placeholder.com/100?text=Producto'} alt={item.nombre} className="cart-item-image" />
-            <div className="cart-item-details">
-                <h3 className="cart-item-name">{item.nombre}</h3>
-                <p className="cart-item-price">Precio Unitario: ${item.precio.toFixed(2)}</p>
-                <div className="cart-item-quantity-control">
-                    <button onClick={handleDecrease} disabled={item.cantidad <= 1 || loadingCart}>-</button>
-                    <input
-                        type="number"
-                        value={item.cantidad}
-                        onChange={handleQuantityChange}
-                        min="1"
-                        className="cart-item-quantity-input"
-                        disabled={loadingCart}
-                    />
-                    <button onClick={handleIncrease} disabled={loadingCart}>+</button>
+        <div className="cart-item-card">
+            <div className="item-details">
+                {/* Asumiendo que el producto tiene una imagen URL */}
+                {item.product.imageUrl && (
+                    <img src={item.product.imageUrl} alt={item.product.nombre} className="item-image" />
+                )}
+                <div className="item-info">
+                    <p className="item-name">{item.product.nombre}</p>
+                    <p className="item-branch">Sucursal: {item.branch.nombre}</p>
+                    <p className="item-price">Precio Unitario: ${item.product.precio.toFixed(2)}</p>
                 </div>
-                <p className="cart-item-subtotal">Subtotal: ${itemSubtotal}</p>
-                <button className="cart-item-remove" onClick={() => removeItem(item.id)} disabled={loadingCart}>Eliminar</button>
             </div>
+            <div className="item-quantity-control">
+                <label htmlFor={`quantity-${item.productId}-${item.branchId}`}>Cantidad:</label>
+                <input
+                    type="number"
+                    id={`quantity-${item.productId}-${item.branchId}`}
+                    min="1"
+                    value={item.quantity}
+                    onChange={handleQuantityChange}
+                    className="quantity-input"
+                />
+            </div>
+            <div className="item-total">
+                <p>Total: ${(item.product.precio * item.quantity).toFixed(2)}</p>
+            </div>
+            <button onClick={handleRemove} className="remove-item-button">
+                &#x2715; {/* Símbolo de "X" o "Eliminar" */}
+            </button>
         </div>
     );
 }

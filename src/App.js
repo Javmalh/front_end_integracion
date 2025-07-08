@@ -7,7 +7,7 @@ import Header from './components/Header/Header';
 import HomePage from './pages/HomePage';
 import CartPage from './pages/CartPage';
 import Footer from "./components/Footer/Footer";
-import { CartProvider } from './components/Cart/CartProvider';
+import { CartProvider } from './context/CartContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import UserProfilePage from './pages/UserProfilePage';

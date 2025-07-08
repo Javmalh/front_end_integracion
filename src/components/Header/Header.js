@@ -1,8 +1,8 @@
-// src/main/js/src/components/Header/Header.jsx
+// src/main/js/src/components/Header/Header.js
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../Cart/CartProvider'; // Verifica esta ruta
+import { useCart } from '../../context/CartContext'; // Verifica esta ruta
 import './Header.css';
 import logo from '../../assets/ferremax-logo.png';
 import sucursalesData from '../../data/sucursalesData';

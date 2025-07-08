@@ -1,32 +1,25 @@
 // src/components/CartPage.js
 import React from 'react';
-import { useCart } from '../components/Cart/CartProvider';
-import CartItem from '../components/Cart/CartItem';
-import CartSummary from '../components/Cart/CartSummary';
+// Asegúrate de que la ruta a tu CartProvider sea la correcta
+// Si CartContext.js está en src/context, la ruta sería:
+import { useCart } from '../context/CartContext';
+// Si lo dejaste en src/components/Cart, entonces esta ruta está bien:
+// import { useCart } from './Cart/CartProvider';
+
+import CartItem from '../components/Cart/CartItem'; // Este componente necesita ser actualizado
+import CartSummary from '../components/Cart/CartSummary'; // Este componente también puede necesitar ser actualizado
 import './CartPage.css';
 
 function CartPage() {
-    const { cartItems, loadingCart, cartError, getTotalItems, clearCart, fetchCart } = useCart();
+    // Accede a las propiedades del carrito desde el contexto local
+    const { cart, removeItem, updateItemQuantity, getTotalItems, getTotalPrice, clearCart } = useCart();
 
-    if (loadingCart) {
-        return (
-            <div className="cart-page loading-message-container">
-                <h2>Cargando tu Carrito...</h2>
-                <p>Por favor, espera mientras recuperamos tus productos.</p>
-            </div>
-        );
-    }
+    // Elimina loadingCart y cartError, ya que el carrito es local y carga síncrona
+    // Puedes tener un estado de carga para el checkout si quieres.
+    const [isProcessingCheckout, setIsProcessingCheckout] = React.useState(false);
+    const [checkoutError, setCheckoutError] = React.useState(null);
 
-    if (cartError) {
-        return (
-            <div className="cart-page error-message-container">
-                <h2>Error al Cargar el Carrito</h2>
-                <p>{cartError}</p>
-                <button onClick={fetchCart} className="retry-button">Intentar de Nuevo</button>
-            </div>
-        );
-    }
-
+    // Si el carrito está vacío
     if (getTotalItems() === 0) {
         return (
             <div className="cart-page empty-cart-message-container">
@@ -38,59 +31,83 @@ function CartPage() {
     }
 
     const handleCheckout = async () => {
-        // En este escenario, el checkout podría ser un simple POST a tu backend
-        // que ya tiene los ítems del carrito asociados al usuario.
-        // O podrías enviar un ID de carrito/usuario al endpoint de checkout.
+        setIsProcessingCheckout(true);
+        setCheckoutError(null); // Limpiar errores previos
+
         try {
-            const API_BASE_URL = 'https://mi-ferreteria-api.com/api'; // Tu URL de backend
+            const API_BASE_URL = 'http://localhost:8080/api'; // <--- ¡IMPORTANTE! Ajusta esta URL a la de tu backend de Spring Boot
+            // Si el usuario está logueado, deberías enviar el token de autenticación
+            const jwtToken = localStorage.getItem('jwtToken'); // Obtener el token del localStorage
+
+            // Prepara los ítems del carrito para enviar al backend.
+            // Solo envía la información mínima necesaria para que el backend valide y cree la orden.
+            const orderItems = cart.items.map(item => ({
+                productId: item.productId,
+                branchId: item.branchId,
+                quantity: item.quantity
+            }));
 
             const response = await fetch(`${API_BASE_URL}/orders/checkout`, { // Ajusta a tu endpoint de checkout
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${localStorage.getItem('jwtToken')}` // Necesario si el backend requiere autenticación
+                    // Si el backend requiere autenticación, incluye el token:
+                    ...(jwtToken && { 'Authorization': `Bearer ${jwtToken}` })
                 },
-                // Si tu endpoint de checkout necesita más datos (ej. shippingAddress, paymentMethod), inclúyelos aquí.
-                // Si el backend ya conoce el carrito por el token/sesión del usuario, el body puede ser vacío o mínimo.
-                body: JSON.stringify({ userId: "usuario123" }) // Ejemplo: enviar el userId si es necesario.
+                body: JSON.stringify({
+                    items: orderItems,
+                    // Puedes añadir aquí otros datos como:
+                    // shippingAddress: "Calle Falsa 123",
+                    // paymentMethod: "Tarjeta de Crédito",
+                })
             });
 
             if (!response.ok) {
-                const errorDetails = await response.json();
-                throw new Error(errorDetails.message || 'Error al finalizar la compra');
+                const errorData = await response.json(); // Leer los detalles del error del backend
+                throw new Error(errorData.message || 'Error al finalizar la compra');
             }
 
             const result = await response.json();
             alert('¡Orden procesada con éxito! ID de la orden: ' + result.orderId);
-            await clearCart(); // Vaciar el carrito en el backend y luego refrescar el frontend
+            clearCart(); // Vaciar el carrito local después de la compra exitosa
             // Redirigir al usuario a una página de confirmación
             // window.location.href = '/order-confirmation/' + result.orderId;
 
         } catch (error) {
             console.error('Error durante el checkout:', error);
-            alert('Hubo un problema al procesar tu orden: ' + error.message);
+            setCheckoutError(error.message || 'Hubo un problema al procesar tu orden.');
+            alert('Hubo un problema al procesar tu orden: ' + (error.message || 'Error desconocido'));
+        } finally {
+            setIsProcessingCheckout(false);
         }
     };
 
     return (
         <div className="cart-page">
             <h2>Tu Carrito de Compras ({getTotalItems()} artículos)</h2>
+            {checkoutError && <div className="checkout-error-message">{checkoutError}</div>}
             <div className="cart-content">
                 <div className="cart-items-list">
-                    {cartItems.map(item => (
-                        // Asegúrate de que 'item.id' aquí sea el ID del item del carrito, no el ID del producto.
-                        <CartItem key={item.id} item={item} />
+                    {cart.items.map(item => (
+                        // Pasamos el 'item' completo y las funciones de manejo al CartItem
+                        <CartItem
+                            key={`${item.productId}-${item.branchId}`} // Usa una clave única combinando producto y sucursal
+                            item={item}
+                            removeItem={removeItem}
+                            updateItemQuantity={updateItemQuantity}
+                        />
                     ))}
-                    <button onClick={clearCart} className="clear-cart-button" disabled={loadingCart}>Vaciar Carrito</button>
+                    <button onClick={clearCart} className="clear-cart-button">Vaciar Carrito</button>
                 </div>
-                <CartSummary />
+                {/* Pasa el carrito y las funciones de total a CartSummary si las necesita */}
+                <CartSummary cart={cart} getTotalPrice={getTotalPrice} />
             </div>
             <div className="cart-actions">
                 <button className="continue-shopping-btn" onClick={() => window.location.href = '/'}>
                     Continuar Comprando
                 </button>
-                <button className="checkout-btn" onClick={handleCheckout} disabled={loadingCart}>
-                    Ir a Pagar
+                <button className="checkout-btn" onClick={handleCheckout} disabled={isProcessingCheckout}>
+                    {isProcessingCheckout ? 'Procesando...' : 'Ir a Pagar'}
                 </button>
             </div>
         </div>
