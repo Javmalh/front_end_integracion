@@ -1,12 +1,10 @@
-// src/pages/ProductListPage.js
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import FilterSidebar from '../components/FilterSidebar/FilterSidebar';
-import './ProductListPage.css';
 import axios from 'axios';
-// Importa el hook useCart desde tu contexto
-import { useCart } from '../context/CartContext'; // <--- Importa useCart
+import './ProductListPage.css';
+import { useCart } from '../context/CartContext';
+import { getProducts } from '../services/api'; // Importa getProducts desde api.js
 
 function ProductListPage() {
     const [selectedFilters, setSelectedFilters] = useState([]);
@@ -18,9 +16,10 @@ function ProductListPage() {
     const [selectedSucursalId, setSelectedSucursalId] = useState('');
 
     const location = useLocation();
-    const { addItem } = useCart(); // <--- Accede a la función addItem del carrito
+    const { addItem } = useCart();
 
     const handleFilterChange = (newFilters) => {
+        console.log("ProductListPage: Filtros de categoría actualizados:", newFilters); // Depuración
         setSelectedFilters(newFilters);
     };
 
@@ -34,16 +33,19 @@ function ProductListPage() {
 
     const handleSucursalChange = (e) => {
         setSelectedSucursalId(parseInt(e.target.value));
+        console.log("ProductListPage: Sucursal seleccionada:", parseInt(e.target.value)); // Depuración
     };
 
     useEffect(() => {
         const fetchSucursales = async () => {
+            console.log("ProductListPage: Cargando sucursales..."); // Depuración
             try {
-                const response = await axios.get('http://localhost:8080/api/sucursales'); // ¡Ajusta esta URL!
+                // Usa la instancia 'api' si tu endpoint de sucursales requiere token, o axios directo si es público
+                const response = await axios.get('http://localhost:8080/api/sucursales');
                 console.log("Sucursales cargadas del backend:", response.data);
                 setSucursales(response.data);
             } catch (err) {
-                console.error("Error al cargar sucursales:", err);
+                console.error("ProductListPage: Error al cargar sucursales:", err);
             }
         };
         fetchSucursales();
@@ -60,34 +62,38 @@ function ProductListPage() {
     }, [location.search]);
 
     const fetchProducts = useCallback(async () => {
+        console.log("ProductListPage: Iniciando carga de productos..."); // Depuración
         setLoading(true);
         setError(null);
         try {
             const params = {
                 searchTerm: searchTerm,
                 categories: selectedFilters.length > 0 ? selectedFilters.join(',') : undefined,
-                sucursalId: selectedSucursalId || undefined // Esto aún se usa para filtrar productos si se selecciona
+                sucursalId: selectedSucursalId || undefined
             };
 
-            const response = await axios.get('http://localhost:8080/api/products', { // ¡Ajusta esta URL!
-                params: params,
-            });
+            console.log("ProductListPage: Parámetros de búsqueda enviados a getProducts:", params); // Depuración
+            // Usa la función getProducts de api.js que ya maneja la URL base y los interceptores
+            const response = await getProducts(params);
 
+            console.log("ProductListPage: Productos recibidos:", response.data); // Depuración
             setProducts(response.data);
 
         } catch (err) {
-            console.error('Error al cargar productos:', err);
+            console.error('ProductListPage: Error al cargar productos:', err);
             setError('Error al cargar los productos. Inténtalo de nuevo más tarde.');
             if (axios.isAxiosError(err) && err.response) {
-                console.error('Detalles del error del backend:', err.response.data);
+                console.error('ProductListPage: Detalles del error del backend:', err.response.data);
                 setError(err.response.data.message || 'Error al cargar los productos desde el servidor.');
             }
         } finally {
             setLoading(false);
+            console.log("ProductListPage: Carga de productos finalizada. Estado de carga:", false); // Depuración
         }
     }, [selectedFilters, searchTerm, selectedSucursalId]);
 
     useEffect(() => {
+        console.log("ProductListPage: useEffect - Desencadenando fetchProducts."); // Depuración
         fetchProducts();
     }, [fetchProducts]);
 
@@ -104,25 +110,19 @@ function ProductListPage() {
         return formatter.format(price);
     };
 
-    // --- LÓGICA DE AÑADIR AL CARRITO SIN CHEQUEO DE SUCURSAL ---
     const handleAddToCart = (product) => {
-        // Asignamos la primera sucursal cargada como la sucursal por defecto.
-        // Asegúrate de que `sucursales` no esté vacío.
         const defaultBranch = sucursales[0];
 
         if (!defaultBranch) {
-            // Este caso solo debería ocurrir si la carga de sucursales falla o no devuelve ninguna.
             alert('No hay sucursales disponibles para añadir este producto.');
             console.error("Error: No se encontró una sucursal por defecto para añadir el producto.");
             return;
         }
 
-        // Llamamos a addItem con el producto y la sucursal por defecto
-        addItem(product, defaultBranch, 1); // Añade 1 unidad por defecto
+        addItem(product, defaultBranch, 1);
         alert(`${product.nombre} ha sido añadido al carrito en la sucursal ${defaultBranch.nombre}.`);
         console.log("Producto añadido:", product.nombre, "a sucursal:", defaultBranch.nombre);
     };
-    // --- FIN LÓGICA DE AÑADIR AL CARRITO ---
 
     return (
         <div className="product-list-page-container">
@@ -150,7 +150,6 @@ function ProductListPage() {
                             </button>
                         )}
                     </div>
-                    {/* El selector de sucursales sigue presente si lo usas para FILTRAR PRODUCTOS */}
                     <select
                         value={selectedSucursalId}
                         onChange={handleSucursalChange}
@@ -181,7 +180,8 @@ function ProductListPage() {
                     {!loading && !error && products.map(product => (
                         <div key={product.id} className="product-card">
                             <img
-                                src={product.imagenUrl || 'https://via.placeholder.com/150?text=No+Imagen'}
+                                // --- CORRECCIÓN CRÍTICA AQUÍ: Usar product.imageUrl en lugar de product.imagenUrl ---
+                                src={product.imageUrl || 'https://via.placeholder.com/150?text=No+Imagen'}
                                 alt={product.nombre || 'Producto sin nombre'}
                             />
                             <h3>{product.nombre || 'Producto sin nombre'}</h3>
@@ -192,8 +192,6 @@ function ProductListPage() {
                             <button
                                 className="add-to-cart-button"
                                 onClick={() => handleAddToCart(product)}
-                                // ¡El botón ya NO está deshabilitado por la selección de sucursal!
-                                // Podrías deshabilitarlo si `products` está vacío o si `loading` es true.
                             >
                                 Añadir al Carrito
                             </button>

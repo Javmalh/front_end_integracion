@@ -1,11 +1,23 @@
 /* src/components/Header/Header.css */
 
 .header {
-    background-color: #1A1A1A; /* Negro muy oscuro para un look minimalista */
+    /* Cambiamos a un color RGBA para introducir transparencia */
+    background-color: rgba(26, 26, 26, 0.85); /* Negro muy oscuro con 85% de opacidad */
     color: #E0E0E0; /* Blanco roto para el texto principal */
     padding: 15px 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Sombra un poco más pronunciada */
+
+    /* --- EFECTO BLUR AÑADIDO AQUÍ --- */
+    backdrop-filter: blur(8px); /* Aplica un desenfoque de 8px al contenido detrás del header */
+    -webkit-backdrop-filter: blur(8px); /* Prefijo para compatibilidad con navegadores WebKit (Chrome, Safari, Opera) */
+
+    /* Opcional: Si el header es 'fixed' o 'sticky', asegúrate de que el contenido pase por debajo */
+    position: sticky; /* O 'fixed' si quieres que siempre esté visible en la parte superior */
+    top: 0;
+    z-index: 100; /* Asegura que esté por encima de otros elementos */
 }
+
+/* El resto de tu CSS permanece igual */
 
 .header-top {
     max-width: 1200px;
@@ -33,11 +45,10 @@
     display: flex;
     flex-grow: 1;
     margin: 0 30px;
-    border-radius: 5px; /* Aplica el radio al contenedor general */
-    overflow: hidden; /* Importante para que el input y botón se vean dentro del borde */
+    border-radius: 5px;
+    overflow: hidden;
 }
 
-/* Contenedor para el input de búsqueda y el botón de limpiar */
 .search-input-wrapper {
     position: relative;
     flex-grow: 1;
@@ -48,28 +59,27 @@
     flex-grow: 1;
     padding: 10px 15px;
     border: none;
-    border-radius: 0; /* No tiene radio aquí, lo maneja el .search-bar */
+    border-radius: 0;
     font-size: 1rem;
     outline: none;
     box-sizing: border-box;
-    background-color: #333333; /* Fondo oscuro para el input */
-    color: #E0E0E0; /* Texto del input blanco roto */
-    padding-right: 35px; /* Espacio para la X */
+    background-color: #333333;
+    color: #E0E0E0;
+    padding-right: 35px;
 }
 
-/* Estilos para el botón de limpiar la búsqueda (en el Header) */
 .clear-search-button {
     position: absolute;
-    right: 5px; /* Ajusta la posición de la 'X' */
+    right: 5px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #E0E0E0; /* Color de la 'X' */
-    font-size: 1.2rem; /* Este es el tamaño de la 'X' en el header */
+    color: #E0E0E0;
+    font-size: 1.2rem;
     cursor: pointer;
     padding: 5px;
-    line-height: 1; /* Para centrar mejor el símbolo */
+    line-height: 1;
     opacity: 0.7;
     transition: opacity 0.2s ease;
 }
@@ -79,11 +89,11 @@
 }
 
 .search-bar button[type="submit"] {
-    background-color: #00BFA5; /* Verde turquesa vibrante */
+    background-color: #00BFA5;
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 0; /* No tiene radio aquí, lo maneja el .search-bar */
+    border-radius: 0;
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s ease;
@@ -91,7 +101,7 @@
 }
 
 .search-bar button[type="submit"]:hover {
-    background-color: #00897B; /* Tono más oscuro al hover */
+    background-color: #00897B;
 }
 
 /* Navegación derecha */
@@ -99,20 +109,19 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex; /* Usamos flexbox para alinear los ítems de la lista */
-    align-items: center; /* Centra verticalmente los ítems */
-    gap: 15px; /* Espacio entre los ítems (reemplaza margin-left en li) */
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .main-nav ul li {
-    margin-left: 0; /* Asegurarse de que no haya margin-left heredado */
+    margin-left: 0;
     display: flex;
     align-items: center;
     padding: 0;
     border: 0;
 }
 
-/* CLASE BASE PARA TODOS LOS BOTONES DE NAVEGACIÓN (LINKS Y BUTTONS) */
 .header-button-base {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -139,46 +148,42 @@
     justify-content: center;
     box-sizing: border-box;
     height: auto;
-    min-width: 110px; /* Ejemplo: ajusta esto a lo que se vea mejor */
+    min-width: 110px;
 }
 
 .header-button-base:hover {
     transform: translateY(-2px);
 }
 
-/* Estilos específicos para los botones de navegación (ahora gris oscuro con texto claro) */
 .nav-button {
-    background-color: #4A4A4A; /* Gris oscuro sutil */
-    color: #E0E0E0; /* Texto blanco roto */
+    background-color: #4A4A4A;
+    color: #E0E0E0;
 }
 
 .nav-button:hover {
-    background-color: #616161; /* Gris más claro al hover */
+    background-color: #616161;
 }
 
-/* Estilos específicos para el botón del carrito */
 .cart-button {
-    background-color: #FF6F00; /* Naranja quemado vibrante */
+    background-color: #FF6F00;
     color: white;
 }
 
 .cart-button:hover {
-    background-color: #E65100; /* Naranja más oscuro al hover */
+    background-color: #E65100;
 }
 
-/* ESTILOS ESPECÍFICOS PARA EL BOTÓN DE CERRAR SESIÓN (ROJO VIBRANTE) */
 .logout-button {
-    background-color: #FF1744; /* Rojo vibrante */
+    background-color: #FF1744;
     color: white;
 }
 
 .logout-button:hover {
-    background-color: #D50000; /* Rojo más oscuro al hover */
+    background-color: #D50000;
 }
 
-/* Estilos para el contador de ítems del carrito */
 .cart-item-count {
-    background-color: #00C853; /* Verde vibrante para el contador */
+    background-color: #00C853;
     color: white;
     border-radius: 50%;
     padding: 2px 7px;
@@ -194,10 +199,9 @@
     box-sizing: border-box;
 }
 
-/* --- ESTILOS PARA EL MENÚ DESPLEGABLE DE PERFIL --- */
 .profile-dropdown-container {
     position: relative;
-    margin-left: 0; /* Handled by ul gap */
+    margin-left: 0;
     display: flex;
     align-items: center;
     padding-bottom: 0px;
@@ -227,7 +231,6 @@
     pointer-events: none;
 }
 
-/* Esto ahora solo es para la animación visual, la lógica la maneja React */
 .profile-dropdown-container:hover .profile-dropdown-menu {
     opacity: 1;
     visibility: visible;
@@ -235,7 +238,6 @@
     pointer-events: auto;
 }
 
-/* --- ESTILOS PARA EL MENÚ DESPLEGABLE DE SUCURSALES --- */
 .sucursales-dropdown-container {
     position: relative;
     margin-left: 0;
@@ -264,7 +266,6 @@
     pointer-events: none;
 }
 
-/* Esto ahora solo es para la animación visual, la lógica la maneja React */
 .sucursales-dropdown-container:hover .sucursales-dropdown-menu {
     opacity: 1;
     visibility: visible;
@@ -272,8 +273,7 @@
     pointer-events: auto;
 }
 
-/* --- NUEVOS ESTILOS PARA EL MENÚ DESPLEGABLE DE GESTIÓN (PARA WORKER) --- */
-.management-dropdown-container { /* Similar a .profile-dropdown-container */
+.management-dropdown-container {
     position: relative;
     margin-left: 0;
     display: flex;
@@ -285,14 +285,14 @@
     /* Hereda de .header-button-base y .nav-button */
 }
 
-.management-dropdown-menu { /* Similar a .profile-dropdown-menu */
+.management-dropdown-menu {
     position: absolute;
     top: 100%;
-    left: 0; /* O right: 0; si prefieres que se alinee a la derecha del botón */
+    left: 0;
     background-color: #1A1A1A;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    min-width: 180px; /* Ajusta este ancho según el contenido de tus opciones */
+    min-width: 180px;
     z-index: 1000;
     padding: 5px 0;
     display: flex;
@@ -305,7 +305,6 @@
     pointer-events: none;
 }
 
-/* Esto ahora solo es para la animación visual, la lógica la maneja React */
 .management-dropdown-container:hover .management-dropdown-menu {
     opacity: 1;
     visibility: visible;
@@ -313,11 +312,10 @@
     pointer-events: auto;
 }
 
-/* Estilos para los ítems individuales dentro del menú desplegable (comunes para todos los dropdowns) */
 .dropdown-item {
     display: block;
     padding: 10px 15px;
-    color: #E0E0E0; /* Blanco roto para el texto */
+    color: #E0E0E0;
     text-decoration: none;
     font-size: 0.95rem;
     transition: background-color 0.2s ease;
@@ -330,12 +328,11 @@
 }
 
 .dropdown-item:hover {
-    background-color: #333333; /* Gris más claro al hover en el menú */
+    background-color: #333333;
 }
 
-/* Estilo específico para el botón "Cerrar Sesión" dentro del desplegable */
 .logout-dropdown-item {
-    color: #FF1744; /* Rojo vibrante para el texto */
+    color: #FF1744;
     font-weight: bold;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: 5px;
@@ -343,7 +340,7 @@
 }
 
 .logout-dropdown-item:hover {
-    background-color: #D50000; /* Fondo rojo más oscuro al hover */
+    background-color: #D50000;
     color: white;
 }
 
@@ -364,12 +361,12 @@
     }
     .main-nav ul {
         justify-content: center;
-        gap: 10px; /* Reducir gap en móviles si es necesario */
+        gap: 10px;
     }
 
     .profile-dropdown-container,
     .sucursales-dropdown-container,
-    .management-dropdown-container { /* Aplica estilos responsivos a todos los dropdowns */
+    .management-dropdown-container {
         flex-basis: 100%;
         justify-content: center;
         margin-left: 0;
@@ -377,7 +374,7 @@
     }
     .profile-dropdown-menu,
     .sucursales-dropdown-menu,
-    .management-dropdown-menu { /* Aplica estilos responsivos a todos los menús desplegables */
+    .management-dropdown-menu {
         left: 50%;
         transform: translateX(-50%);
         right: auto;

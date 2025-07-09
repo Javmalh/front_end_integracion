@@ -1,10 +1,12 @@
-// src/main/js/src/services/api.js
-
 import axios from 'axios';
 
-// La URL base de tu backend de Spring Boot. Asegúrate de que sea la correcta.
+// URL base de tu API de Spring Boot
 const API_BASE_URL = 'http://localhost:8080/api';
 
+// Función para obtener el token JWT del almacenamiento local (o de donde lo guardes)
+const getToken = () => localStorage.getItem('jwtToken');
+
+// Configuración de una instancia de Axios con la URL base
 const api = axios.create({
     baseURL: API_BASE_URL,
     headers: {
@@ -12,74 +14,54 @@ const api = axios.create({
     },
 });
 
-// Interceptor para añadir el token JWT a cada petición
-// Suponiendo que guardas el token JWT en localStorage después del login
+// Interceptor para añadir el token de autorización a cada petición saliente
 api.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('jwtToken'); // O donde sea que guardes tu token
+    config => {
+        const token = getToken();
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
     },
-    (error) => {
+    error => {
         return Promise.reject(error);
     }
 );
 
-let isRedirecting = false; // Flag para evitar múltiples redirecciones al detectar 401
+// --- Funciones de la API para Productos ---
 
-// Interceptor para manejar errores de respuesta, especialmente 401 Unauthorized
-api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        // Si el error es 401 Unauthorized (token expirado, inválido, o no enviado)
-        // Y no estamos ya en proceso de redirección
-        if (error.response && error.response.status === 401 && !isRedirecting) {
-            isRedirecting = true; // Activa el flag para evitar redirecciones repetidas
-            console.warn("Token JWT expirado o no autorizado. Redirigiendo al login.");
-            // 1. Elimina el token inválido del almacenamiento local
-            localStorage.removeItem('jwtToken');
-            localStorage.removeItem('userName'); // Limpia también el nombre
-            localStorage.removeItem('userRole'); // Limpia también el rol
-            // 2. Redirige al usuario a la página de login después de un pequeño retraso
-            window.location.href = '/login'; // Ajusta esto si tu ruta de login es diferente
-        }
-        return Promise.reject(error);
-    }
-);
+export const getProducts = (params) => {
+    console.log('API: Obteniendo productos con parámetros:', params);
+    return api.get('/products', { params });
+};
 
-// --- Métodos de Autenticación (Auth) ---
-// Estas son exportaciones con nombre
-export const registerUser = (userData) => api.post('/auth/register', userData);
-export const loginUser = (credentials) => api.post('/auth/login', credentials);
+export const createProduct = (productData) => {
+    console.log('API: Creando producto. Datos enviados a backend (incluyendo imageUrl):', productData);
+    console.log('API: Valor de imageUrl enviado para creación:', productData.imageUrl); // ¡CRÍTICO! Observa este log
+    return api.post('/products', productData);
+};
 
-// --- Métodos de Productos ---
-// Estas son exportaciones con nombre
-export const getProducts = (params) => api.get('/products', { params });
-export const getProductById = (id) => api.get(`/products/${id}`);
-export const createProduct = (productData) => api.post('/products', productData);
-export const updateProduct = (id, productData) => api.put(`/products/${id}`, productData);
-export const deleteProduct = (id) => api.delete(`/products/${id}`);
+export const updateProduct = (id, productData) => {
+    console.log('API: Actualizando producto ID:', id, '. Datos enviados a backend (incluyendo imageUrl):', productData);
+    console.log('API: Valor de imageUrl enviado para actualización:', productData.imageUrl); // ¡CRÍTICO! Observa este log
+    return api.put(`/products/${id}`, productData);
+};
 
-// --- Métodos de Órdenes ---
-// Estas son exportaciones con nombre
-export const getOrders = () => api.get('/ordenes');
-export const getOrdersByBranch = (branchName) => api.get(`/ordenes?sucursal=${branchName}`);
-export function createOrder (orderData) {
-    return api.post('/ordenes', orderData);
-}
+export const deleteProduct = (id) => {
+    console.log('API: Eliminando producto ID:', id);
+    return api.delete(`/products/${id}`);
+};
 
-// --- Métodos de Pagos (Payment) ---
-// Estas son exportaciones con nombre
-export const createPayment = (paymentData) => api.post('/payment/create', paymentData);
-export const listPayments = () => api.get('/payment/list');
+// --- Función de la API para Categorías ---
+export const getAllProductCategories = () => {
+    console.log('API: Obteniendo todas las categorías de productos...');
+    return api.get('/products/categories');
+};
 
-// --- Métodos de Usuarios (User) ---
-// Estas son exportaciones con nombre
-export const getUserProfile = () => api.get('/users/profile');
-export const updateProfile = (profileData) => api.put('/users/profile', profileData);
-export const changePassword = (passwordData) => api.put('/users/password', passwordData);
+// --- Función de la API para Perfil de Usuario ---
+export const getUserProfile = () => {
+    console.log('API: Obteniendo perfil de usuario...');
+    return api.get('/users/profile');
+};
 
-// Exportación por defecto de la instancia de Axios configurada
 export default api;

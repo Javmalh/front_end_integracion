@@ -9,7 +9,7 @@ import CartPage from './pages/CartPage';
 import Footer from "./components/Footer/Footer";
 import { CartProvider } from './context/CartContext';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
 import UserProfilePage from './pages/UserProfilePage';
 import WorkerDashboardPage from './pages/WorkerDashboardPage';
 import Sucursales from "./pages/Sucursales";
