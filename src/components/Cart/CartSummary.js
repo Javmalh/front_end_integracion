@@ -15,21 +15,19 @@ const formatPriceCLP = (price) => {
     return formatter.format(price);
 };
 
-function CartSummary({ total }) { // total ya es el precio total calculado
+function CartSummary({ total }) {
     return (
-        <div className="cart-summary-card"> {/* Clase principal de la card de resumen */}
+        <div className="cart-summary-card">
             <h3>Resumen del Pedido</h3>
             <div className="summary-item">
                 <span>Subtotal:</span>
-                <span>{formatPriceCLP(total)}</span> {/* Aquí total es el subtotal/total final */}
+                <span>{formatPriceCLP(total)}</span>
             </div>
             {/* Puedes añadir más líneas aquí para impuestos, envío, etc. si tu app lo necesita */}
-
-            <div className="summary-total-final"> {/* Clase para el total final */}
+            <div className="summary-total-final">
                 <span>Total a Pagar:</span>
                 <span>{formatPriceCLP(total)}</span>
             </div>
-            {/* El botón de checkout ya está en CartPage.js, así que no lo repetimos aquí */}
         </div>
     );
 }

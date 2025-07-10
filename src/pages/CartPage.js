@@ -138,7 +138,10 @@ function CartPage() {
                         </button>
                     )}
                 </div>
-                <CartSummary total={getTotalPrice()} />
+                {/* --- ¡LA MODIFICACIÓN CLAVE ESTÁ AQUÍ! --- */}
+                {/* Pasa la propiedad 'total' del objeto retornado por getTotalPrice() */}
+                <CartSummary total={getTotalPrice().total} />
+                {/* --- FIN DE LA MODIFICACIÓN --- */}
             </div>
             <div className="cart-actions">
                 <Link to="/" className="continue-shopping-btn">
