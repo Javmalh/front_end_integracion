@@ -5,6 +5,7 @@ import axios from 'axios';
 import './ProductListPage.css';
 import { useCart } from '../context/CartContext';
 import { getProducts } from '../services/api'; // Importa getProducts desde api.js
+import api from '../services/api'; // Importa la instancia api si la necesitas para sucursales
 
 function ProductListPage() {
     const [selectedFilters, setSelectedFilters] = useState([]);
@@ -16,12 +17,12 @@ function ProductListPage() {
     const [selectedSucursalId, setSelectedSucursalId] = useState('');
 
     const location = useLocation();
-    const { addItem } = useCart();
+    const { addItem } = useCart(); // addItem del contexto local del carrito
 
-    const handleFilterChange = (newFilters) => {
-        console.log("ProductListPage: Filtros de categoría actualizados:", newFilters); // Depuración
+    const handleFilterChange = useCallback((newFilters) => {
+        console.log("ProductListPage: Filtros de categoría actualizados:", newFilters);
         setSelectedFilters(newFilters);
-    };
+    }, []);
 
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
@@ -32,16 +33,16 @@ function ProductListPage() {
     };
 
     const handleSucursalChange = (e) => {
-        setSelectedSucursalId(parseInt(e.target.value));
-        console.log("ProductListPage: Sucursal seleccionada:", parseInt(e.target.value)); // Depuración
+        setSelectedSucursalId(parseInt(e.target.value, 10));
+        console.log("ProductListPage: Sucursal seleccionada:", parseInt(e.target.value, 10));
     };
 
     useEffect(() => {
         const fetchSucursales = async () => {
-            console.log("ProductListPage: Cargando sucursales..."); // Depuración
+            console.log("ProductListPage: Cargando sucursales...");
             try {
-                // Usa la instancia 'api' si tu endpoint de sucursales requiere token, o axios directo si es público
-                const response = await axios.get('http://localhost:8080/api/sucursales');
+                // Usar 'api' para la petición de sucursales si requiere token
+                const response = await api.get('/sucursales');
                 console.log("Sucursales cargadas del backend:", response.data);
                 setSucursales(response.data);
             } catch (err) {
@@ -62,7 +63,7 @@ function ProductListPage() {
     }, [location.search]);
 
     const fetchProducts = useCallback(async () => {
-        console.log("ProductListPage: Iniciando carga de productos..."); // Depuración
+        console.log("ProductListPage: Iniciando carga de productos...");
         setLoading(true);
         setError(null);
         try {
@@ -72,11 +73,10 @@ function ProductListPage() {
                 sucursalId: selectedSucursalId || undefined
             };
 
-            console.log("ProductListPage: Parámetros de búsqueda enviados a getProducts:", params); // Depuración
-            // Usa la función getProducts de api.js que ya maneja la URL base y los interceptores
+            console.log("ProductListPage: Parámetros de búsqueda enviados a getProducts:", params);
             const response = await getProducts(params);
 
-            console.log("ProductListPage: Productos recibidos:", response.data); // Depuración
+            console.log("ProductListPage: Productos recibidos:", response.data);
             setProducts(response.data);
 
         } catch (err) {
@@ -88,12 +88,11 @@ function ProductListPage() {
             }
         } finally {
             setLoading(false);
-            console.log("ProductListPage: Carga de productos finalizada. Estado de carga:", false); // Depuración
         }
     }, [selectedFilters, searchTerm, selectedSucursalId]);
 
     useEffect(() => {
-        console.log("ProductListPage: useEffect - Desencadenando fetchProducts."); // Depuración
+        console.log("ProductListPage: useEffect - Desencadenando fetchProducts.");
         fetchProducts();
     }, [fetchProducts]);
 
@@ -111,17 +110,21 @@ function ProductListPage() {
     };
 
     const handleAddToCart = (product) => {
-        const defaultBranch = sucursales[0];
+        let selectedBranch = sucursales.find(s => s.id === selectedSucursalId);
 
-        if (!defaultBranch) {
-            alert('No hay sucursales disponibles para añadir este producto.');
-            console.error("Error: No se encontró una sucursal por defecto para añadir el producto.");
+        if (!selectedBranch && sucursales.length > 0) {
+            selectedBranch = sucursales[0]; // Si no se selecciona, toma la primera disponible
+        }
+
+        if (!selectedBranch) {
+            alert('No hay sucursales disponibles para añadir este producto. Por favor, carga las sucursales o selecciona una.');
+            console.error("Error: No se encontró una sucursal para añadir el producto.");
             return;
         }
 
-        addItem(product, defaultBranch, 1);
-        alert(`${product.nombre} ha sido añadido al carrito en la sucursal ${defaultBranch.nombre}.`);
-        console.log("Producto añadido:", product.nombre, "a sucursal:", defaultBranch.nombre);
+        addItem(product, selectedBranch, 1); // Llama a addItem del contexto con el producto y la sucursal
+        alert(`${product.nombre} ha sido añadido al carrito en la sucursal ${selectedBranch.nombre}.`);
+        console.log("Producto añadido:", product.nombre, "a sucursal:", selectedBranch.nombre);
     };
 
     return (
@@ -180,7 +183,6 @@ function ProductListPage() {
                     {!loading && !error && products.map(product => (
                         <div key={product.id} className="product-card">
                             <img
-                                // --- CORRECCIÓN CRÍTICA AQUÍ: Usar product.imageUrl en lugar de product.imagenUrl ---
                                 src={product.imageUrl || 'https://via.placeholder.com/150?text=No+Imagen'}
                                 alt={product.nombre || 'Producto sin nombre'}
                             />

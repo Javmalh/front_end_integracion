@@ -1,0 +1,92 @@
+/* src/pages/PaymentResultPage.css */
+.payment-result-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.payment-result-container.success {
+    background-color: #e6ffe6; /* Verde claro */
+    border: 1px solid #4CAF50; /* Borde verde */
+    color: #333;
+}
+
+.payment-result-container.error {
+    background-color: #ffe6e6; /* Rojo claro */
+    border: 1px solid #F44336; /* Borde rojo */
+    color: #333;
+}
+
+.payment-result-container h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: inherit; /* Hereda del contenedor */
+}
+
+.payment-result-container.success h2 {
+    color: #4CAF50;
+}
+
+.payment-result-container.error h2 {
+    color: #F44336;
+}
+
+.payment-result-container .message {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    color: #555;
+}
+
+.payment-result-container .transaction-details {
+    background-color: rgba(0, 0, 0, 0.05); /* Fondo suave para detalles */
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.payment-result-container .transaction-details p {
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: #444;
+}
+
+.payment-result-container .transaction-details strong {
+    color: #222;
+}
+
+.payment-result-container .button-primary {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+}
+
+.payment-result-container .button-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Responsividad */
+@media (max-width: 600px) {
+    .payment-result-container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+    .payment-result-container h2 {
+        font-size: 1.6rem;
+    }
+    .payment-result-container .message {
+        font-size: 1rem;
+    }
+}

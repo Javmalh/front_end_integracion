@@ -1,7 +1,6 @@
 // src/App.js
 
 import React, { useState, useEffect } from 'react';
-// Elimina BrowserRouter as Router de aquí, ya que se usa en index.js
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header/Header';
 import HomePage from './pages/HomePage';
@@ -15,7 +14,15 @@ import WorkerDashboardPage from './pages/WorkerDashboardPage';
 import Sucursales from "./pages/Sucursales";
 import ProductListPage from './pages/ProductListPage';
 import AccountSettingsPage from './pages/AccountSettingsPage';
-import WorkerInventoryPage from './pages/WorkerInventoryPage'; // Importación de la vista de inventario
+import WorkerInventoryPage from './pages/WorkerInventoryPage';
+
+// --- ¡NUEVAS IMPORTACIONES PARA PÁGINAS DE PAGO! ---
+import PaymentSuccessPage from './pages/PaymentSuccessPage';
+import PaymentFailurePage from './pages/PaymentFailurePage';
+
+// --- IMPORTACIONES PARA REACT-TOASTIFY ---
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Estilos CSS de Toastify
 
 import './App.css';
 
@@ -32,35 +39,30 @@ function ScrollToTop() {
 
 function App() {
     const location = useLocation();
+    const navigate = useNavigate();
 
-    // Estado para verificar si el usuario está logueado, inicializado desde localStorage
     const [isLoggedIn, setIsLoggedIn] = useState(() => {
         const storedToken = localStorage.getItem('jwtToken');
-        return !!storedToken; // Convertir a booleano
+        return !!storedToken;
     });
 
-    // Estado para el nombre de usuario, inicializado desde localStorage
     const [userName, setUserName] = useState(() => {
         return localStorage.getItem('userName') || '';
     });
 
-    // Estado para el token de acceso, inicializado desde localStorage
     const [accessToken, setAccessToken] = useState(() => {
         return localStorage.getItem('jwtToken') || '';
     });
 
-    // Estado para el rol del usuario, inicializado desde localStorage
     const [userRole, setUserRole] = useState(() => {
         return localStorage.getItem('userRole') || 'USER';
     });
 
-    // Función para actualizar el userName globalmente (llamada desde UserProfilePage o AccountSettingsPage)
     const handleUserNameUpdate = (newName) => {
         setUserName(newName);
-        localStorage.setItem('userName', newName); // Actualiza también en localStorage
+        localStorage.setItem('userName', newName);
     };
 
-    // Función para manejar el login
     const handleLogin = (token, name, role) => {
         setIsLoggedIn(true);
         setAccessToken(token);
@@ -69,9 +71,9 @@ function App() {
         localStorage.setItem('jwtToken', token);
         localStorage.setItem('userName', name);
         localStorage.setItem('userRole', role);
+        toast.success(`¡Bienvenido, ${name}!`);
     };
 
-    // Función para manejar el logout
     const handleLogout = () => {
         setIsLoggedIn(false);
         setUserName('');
@@ -80,22 +82,33 @@ function App() {
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('userName');
         localStorage.removeItem('userRole');
-        alert('¡Has cerrado sesión!'); // O puedes usar un toast/notificación
+        toast.info('¡Has cerrado sesión!');
+        navigate('/login');
     };
 
     useEffect(() => {
         // La lógica de recuperación de localStorage ya está en los useState initializers
-        // Este useEffect podría usarse para otras inicializaciones o verificaciones al montar App.
     }, []);
 
-    // Determina si el header y el footer deben mostrarse según la ruta actual
     const shouldShowHeaderAndFooter = location.pathname !== '/login' &&
         location.pathname !== '/register';
 
     return (
         <CartProvider>
-            {/* ELIMINA <Router> de aquí, ya que está en index.js */}
-            <ScrollToTop /> {/* Asegura que la página se desplace al inicio en cada cambio de ruta */}
+            {/* --- CONTENEDOR DE TOASTIFY --- */}
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+
+            <ScrollToTop />
             <div className="App">
                 {shouldShowHeaderAndFooter && (
                     <Header
@@ -114,13 +127,15 @@ function App() {
                         <Route path="/sucursales" element={<Sucursales />} />
                         <Route path="/productos" element={<ProductListPage />} />
 
-                        {/* Rutas protegidas que solo son accesibles si el usuario está logueado */}
+                        {/* --- ¡NUEVAS RUTAS PARA PÁGINAS DE PAGO! --- */}
+                        {/* Estas rutas no necesitan protección inicial, ya que Transbank las redirige */}
+                        <Route path="/payment-success" element={<PaymentSuccessPage />} />
+                        <Route path="/payment-failure" element={<PaymentFailurePage />} />
+
                         {isLoggedIn ? (
                             <>
                                 <Route path="/worker-dashboard" element={<WorkerDashboardPage />} />
-                                {/* NUEVA RUTA PARA EL INVENTARIO DEL TRABAJADOR */}
                                 <Route path="/worker-inventory" element={<WorkerInventoryPage />} />
-                                {/* Se pasa la función onProfileUpdate a los componentes de perfil y configuración */}
                                 <Route
                                     path="/profile"
                                     element={<UserProfilePage onProfileUpdate={handleUserNameUpdate} />}
@@ -131,11 +146,10 @@ function App() {
                                 />
                             </>
                         ) : (
-                            // Si no está logueado, redirige a la página de login para estas rutas
                             <>
                                 <Route path="/profile" element={<RedirectToLogin />} />
                                 <Route path="/worker-dashboard" element={<RedirectToLogin />} />
-                                <Route path="/worker-inventory" element={<RedirectToLogin />} /> {/* Proteger también esta ruta */}
+                                <Route path="/worker-inventory" element={<RedirectToLogin />} />
                                 <Route path="/settings" element={<RedirectToLogin />} />
                             </>
                         )}
@@ -145,7 +159,6 @@ function App() {
                 </main>
                 {shouldShowHeaderAndFooter && <Footer />}
             </div>
-            {/* ELIMINA EL CIERRE DE <Router> de aquí también */}
         </CartProvider>
     );
 }

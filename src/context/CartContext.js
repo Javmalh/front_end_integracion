@@ -1,88 +1,121 @@
-// src/context/CartContext.js
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback, useMemo } from 'react'; // Asegúrate de importar useMemo
 
-// Crea el contexto. No necesitas definir el tipo explícitamente como en TypeScript.
 const CartContext = createContext(undefined);
 
-export const CartProvider = ({ children }) => {
+export function CartProvider({ children }) {
     const [cart, setCart] = useState(() => {
-        // Inicializar el carrito desde localStorage
         try {
             const storedCart = localStorage.getItem('ferremax_cart');
-            return storedCart ? JSON.parse(storedCart) : { items: [] };
+            if (!storedCart) return { items: [] };
+
+            const parsedCart = JSON.parse(storedCart);
+
+            const validItems = parsedCart.items.filter(item =>
+                item?.product?.id &&
+                item?.sucursal?.id &&
+                typeof item.quantity === 'number' && item.quantity >= 1
+            );
+            console.log('CartContext: Carrito cargado de localStorage. Ítems válidos:', validItems.length, 'Total ítems:', parsedCart.items.length);
+            return { items: validItems };
         } catch (error) {
-            console.error("Error al parsear el carrito desde localStorage:", error);
+            console.error("CartContext: Error al parsear el carrito desde localStorage:", error);
             return { items: [] };
         }
     });
 
-    // Guardar el carrito en localStorage cada vez que cambie
     useEffect(() => {
         try {
             localStorage.setItem('ferremax_cart', JSON.stringify(cart));
+            console.log('CartContext: Carrito guardado en localStorage.', cart.items.length, 'ítems.');
         } catch (error) {
-            console.error("Error al guardar el carrito en localStorage:", error);
+            console.error("CartContext: Error al guardar el carrito en localStorage:", error);
         }
     }, [cart]);
 
-    const addItem = (product, branch, quantity) => {
-        setCart((prevCart) => {
+    const addItem = useCallback((product, sucursal, quantity = 1) => {
+        setCart(prevCart => {
+            if (!product || !product.id || !sucursal || !sucursal.id) {
+                console.error("CartContext: addItem - Producto o Sucursal no tienen ID o son indefinidos.", { product, sucursal });
+                return prevCart;
+            }
+            if (typeof quantity !== 'number' || quantity < 1) {
+                console.warn("CartContext: addItem - Cantidad inválida, ajustando a 1.", quantity);
+                quantity = 1;
+            }
+
             const existingItemIndex = prevCart.items.findIndex(
-                (item) => item.productId === product.id && item.branchId === branch.id
+                (item) => item.product.id === product.id && item.sucursal.id === sucursal.id
             );
 
             if (existingItemIndex > -1) {
-                // Si el producto ya existe en la misma sucursal, actualiza la cantidad
                 const updatedItems = [...prevCart.items];
                 updatedItems[existingItemIndex].quantity += quantity;
+                console.log(`CartContext: Cantidad de ${product.nombre} actualizada a ${updatedItems[existingItemIndex].quantity}`);
                 return { ...prevCart, items: updatedItems };
             } else {
-                // Si no existe, añade un nuevo item
                 const newItem = {
                     productId: product.id,
-                    product: product, // Información detallada del producto
-                    branchId: branch.id,
-                    branch: branch,   // Información detallada de la sucursal
+                    product: product,
+                    branchId: sucursal.id,
+                    sucursal: sucursal,
                     quantity: quantity,
                 };
+                console.log(`CartContext: ${product.nombre} añadido. Cantidad: ${quantity}`);
                 return { ...prevCart, items: [...prevCart.items, newItem] };
             }
         });
-    };
+        return true;
+    }, []);
 
-    const removeItem = (productId, branchId) => {
-        setCart((prevCart) => ({
-            ...prevCart,
-            items: prevCart.items.filter(
-                (item) => !(item.productId === productId && item.branchId === branchId)
-            ),
-        }));
-    };
-
-    const updateItemQuantity = (productId, branchId, newQuantity) => {
+    const removeItem = useCallback((productId, sucursalId) => {
         setCart((prevCart) => {
-            const updatedItems = prevCart.items.map((item) =>
-                item.productId === productId && item.branchId === branchId
-                    ? { ...item, quantity: newQuantity > 0 ? newQuantity : 1 } // Asegura que la cantidad sea al menos 1
-                    : item
+            const updatedItems = prevCart.items.filter(
+                (item) => !(item.product.id === productId && item.sucursal.id === sucursalId)
             );
+            console.log(`CartContext: Producto ID ${productId} de Sucursal ID ${sucursalId} eliminado.`);
             return { ...prevCart, items: updatedItems };
         });
-    };
+    }, []);
 
-    const clearCart = () => {
+    const updateItemQuantity = useCallback((productId, sucursalId, newQuantity) => {
+        setCart((prevCart) => {
+            const quantityToSet = (typeof newQuantity === 'number' && newQuantity >= 1) ? newQuantity : 1;
+            const updatedItems = prevCart.items.map((item) =>
+                item.product.id === productId && item.sucursal.id === sucursalId
+                    ? { ...item, quantity: quantityToSet }
+                    : item
+            );
+            console.log(`CartContext: Cantidad de producto ID ${productId} en Sucursal ID ${sucursalId} actualizada a ${quantityToSet}`);
+            return { ...prevCart, items: updatedItems };
+        });
+    }, []);
+
+    const clearCart = useCallback(() => {
         setCart({ items: [] });
-    };
+        console.log("CartContext: Carrito vaciado.");
+    }, []);
 
-    const getTotalItems = () => {
-        return cart.items.reduce((total, item) => total + item.quantity, 0);
-    };
+    const getTotalItems = useCallback(() => {
+        return cart.items.reduce((total, item) => total + (item.quantity || 0), 0);
+    }, [cart.items]);
 
-    const getTotalPrice = () => {
-        return cart.items.reduce((total, item) => total + (item.product.precio * item.quantity), 0);
-    };
+    const getTotalPrice = useCallback(() => {
+        let calculatedSubtotal = 0;
+        console.log("CartContext (getTotalPrice): Iniciando cálculo del total. Número de ítems:", cart.items.length);
+        cart.items.forEach((item, index) => {
+            const itemPrice = typeof item.product?.precio === 'number' ? item.product.precio : 0;
+            const itemQuantity = typeof item.quantity === 'number' ? item.quantity : 0;
 
-    const contextValue = {
+            const itemSubtotal = itemPrice * itemQuantity;
+            calculatedSubtotal += itemSubtotal;
+
+            console.log(`CartContext (getTotalPrice): Ítem ${index}: Nombre: ${item.product?.nombre || 'N/A'}, Precio: ${itemPrice}, Cantidad: ${itemQuantity}, Subtotal Ítem: ${itemSubtotal}`);
+        });
+        console.log("CartContext (getTotalPrice): Total calculado FINAL:", calculatedSubtotal);
+        return { subtotal: calculatedSubtotal, total: calculatedSubtotal };
+    }, [cart.items]);
+
+    const contextValue = useMemo(() => ({ // Usamos useMemo importado
         cart,
         addItem,
         removeItem,
@@ -90,16 +123,16 @@ export const CartProvider = ({ children }) => {
         clearCart,
         getTotalItems,
         getTotalPrice,
-    };
+        setCart,
+    }), [cart, addItem, removeItem, updateItemQuantity, clearCart, getTotalItems, getTotalPrice, setCart]);
 
     return (
-        <CartContext.Provider value={contextValue}>
+        <CartContext.Provider value={contextValue}> {/* <-- ¡CORRECCIÓN AQUÍ! */}
             {children}
         </CartContext.Provider>
     );
-};
+}
 
-// Hook personalizado para usar el carrito
 export const useCart = () => {
     const context = useContext(CartContext);
     if (context === undefined) {

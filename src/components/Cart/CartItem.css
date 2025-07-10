@@ -1,83 +1,148 @@
-/* src/components/CartItem.css */
-.cart-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #eee;
+/* src/components/Cart/CartItem.css */
+
+.cart-item-card {
+    display: flex; /* Alinea imagen, detalles y acciones horizontalmente */
+    align-items: center; /* Centra verticalmente los elementos */
+    background-color: white;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
 }
 
-.cart-item-image {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
+.cart-item-card:hover {
+    transform: translateY(-3px);
+}
+
+.item-image-container {
+    flex-shrink: 0; /* Evita que la imagen se encoja */
+    width: 100px; /* Tamaño fijo para la imagen del carrito */
+    height: 100px;
     margin-right: 15px;
-    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Asegura que la imagen se ajuste dentro del contenedor */
+    border-radius: 4px;
+    border: 1px solid #eee; /* Borde sutil para la imagen */
 }
 
-.cart-item-details {
-    flex-grow: 1;
+.item-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ajusta la imagen dentro del contenedor sin recortarla */
+    border-radius: 4px;
 }
 
-.cart-item-name {
-    margin: 0 0 5px 0;
+.item-details-main { /* Contenedor para el nombre, sucursal, precio */
+    flex-grow: 1; /* Ocupa el espacio restante */
+    margin-right: 15px;
+}
+
+.item-name {
     font-size: 1.1rem;
-    color: #34495e;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-.cart-item-price, .cart-item-subtotal {
-    margin: 0 0 5px 0;
-    color: #555;
+.item-branch, .item-price-unit {
     font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 3px;
 }
 
-.cart-item-quantity-control {
+.item-quantity-control {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin-top: 10px;
+    margin-right: 15px; /* Espacio antes del total */
 }
 
-.cart-item-quantity-control button {
-    background-color: #6c757d; /* Gris de Bootstrap */
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    margin: 0 5px;
+.item-quantity-control label {
+    font-weight: bold;
+    color: #555;
 }
 
-.cart-item-quantity-control button:hover {
-    background-color: #5a6268;
-}
-
-.cart-item-quantity-input {
-    width: 50px;
-    text-align: center;
+.quantity-input {
+    width: 60px;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    padding: 5px;
+    text-align: center;
+    font-size: 1rem;
     -moz-appearance: textfield; /* Para ocultar flechas en Firefox */
 }
-/* Para ocultar flechas en Chrome, Safari, Edge */
-.cart-item-quantity-input::-webkit-outer-spin-button,
-.cart-item-quantity-input::-webkit-inner-spin-button {
+
+/* Oculta las flechas de spin para inputs de tipo number en Webkit (Chrome, Safari, Opera) */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-
-.cart-item-remove {
-    background-color: #f44336; /* Rojo */
-    padding: 8px 12px;
-    font-size: 0.9rem;
-    margin-top: 5px;
+.item-total-price { /* Estilo para el total individual del item */
+    font-weight: bold;
+    color: #000;
+    font-size: 1.05rem;
+    margin-left: auto; /* Empuja el total a la derecha */
+    flex-shrink: 0; /* Evita que se encoja */
 }
 
-.cart-item-remove:hover {
-    background-color: #d32f2f;
+.item-actions { /* Contenedor para el botón de eliminar */
+    flex-shrink: 0;
+    margin-left: 15px; /* Espacio a la izquierda del botón */
+}
+
+.remove-item-button {
+    background: none;
+    border: none;
+    color: #dc3545; /* Rojo para eliminar */
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.remove-item-button:hover {
+    color: #a71d2a;
+}
+
+/* Media Queries para Responsividad dentro del ítem */
+@media (max-width: 600px) {
+    .cart-item-card {
+        flex-direction: column; /* Apila imagen, detalles y acciones en pantallas pequeñas */
+        align-items: flex-start; /* Alinea los ítems a la izquierda */
+    }
+    .item-image-container {
+        width: 120px;
+        height: 120px;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    .item-details-main {
+        margin-right: 0;
+        width: 100%;
+    }
+    .item-quantity-control {
+        margin-right: 0; /* Remueve el margen derecho para que ocupe el ancho */
+        width: 100%; /* Ocupa todo el ancho */
+        justify-content: flex-start; /* Alinea la cantidad a la izquierda */
+    }
+    .item-total-price {
+        margin-left: 0; /* Alinea el total a la izquierda */
+        width: 100%; /* Ocupa todo el ancho */
+        text-align: left;
+        margin-top: 10px; /* Espacio extra */
+    }
+    .item-actions {
+        margin-left: 0;
+        width: 100%;
+        text-align: right; /* Alinea el botón de eliminar a la derecha */
+        margin-top: 10px;
+    }
 }

@@ -1,38 +1,36 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './RegisterPage.css'; // Asegúrate de que la ruta de tu CSS sea correcta
-import AuthService from '../../services/AuthService'; // Asegúrate de que la ruta de tu AuthService sea correcta
+import { toast } from 'react-toastify'; // <-- ¡Importar toast!
+import './RegisterPage.css';
+import AuthService from '../../services/AuthService'; // Asegúrate de que la ruta sea correcta
 
 function RegisterPage() {
     const [name, setName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
-    const [username, setUsername] = useState(''); // Estado para el nombre de usuario
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [message, setMessage] = useState(''); // Para mostrar mensajes al usuario
+    // Eliminamos 'message' ya que los mensajes se manejarán con toastify
+    // const [message, setMessage] = useState('');
 
-    const navigate = useNavigate(); // Hook para la navegación programática
+    const navigate = useNavigate();
 
-    /**
-     * Maneja el envío del formulario de registro.
-     * @param {Event} e - El evento de envío del formulario.
-     */
-    const handleSubmit = async (e) => { // Marca la función como async
-        e.preventDefault(); // Evita el comportamiento por defecto del formulario
-        setMessage(''); // Limpia mensajes anteriores
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        // Limpiamos el estado 'message' aunque ya no lo usaremos para los toasts
+        // setMessage('');
 
         if (password !== confirmPassword) {
-            setMessage('Las contraseñas no coinciden. Por favor, verifica.');
+            toast.error('Las contraseñas no coinciden. Por favor, verifica.'); // <-- Mensaje de error con toast
             return;
         }
 
         try {
-            // Llama al servicio de registro con todos los datos del formulario
             const responseText = await AuthService.register(username, email, password, name, lastName);
 
-            // Si el registro es exitoso, muestra un mensaje y redirige al login
-            setMessage('¡Registro exitoso! ' + responseText + ' Redirigiendo a la página de inicio de sesión...');
+            // Mensaje de éxito con toast
+            toast.success('¡Registro exitoso! ' + responseText);
             console.log('Registro exitoso:', responseText);
 
             // Redirige al usuario a la página de login después de un pequeño retraso
@@ -41,9 +39,10 @@ function RegisterPage() {
             }, 2000); // Redirige después de 2 segundos
 
         } catch (error) {
-            // Captura y muestra cualquier error que ocurra durante el registro
             console.error('Error al registrar usuario:', error);
-            setMessage('Error al registrar: ' + error.message);
+            // Mensaje de error con toast
+            toast.error('Error al registrar: ' + (error.message || 'Error desconocido'));
+            // setLoggerMessage('Error al registrar: ' + error.message); // Si quieres mantener algún log interno o estado de error
         }
     };
 
@@ -121,8 +120,8 @@ function RegisterPage() {
                         Registrarse
                     </button>
                 </form>
-                {/* Muestra los mensajes de éxito o error al usuario */}
-                {message && <p className="registration-message">{message}</p>}
+                {/* Eliminamos la visualización del 'message' ya que ahora usaremos toastify */}
+                {/* {message && <p className="registration-message">{message}</p>} */}
                 <p className="login-link">
                     ¿Ya tienes cuenta? <Link to="/login">Inicia Sesión aquí</Link>
                 </p>

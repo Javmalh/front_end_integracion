@@ -1,76 +1,61 @@
-/* src/components/CartSummary.css */
-.cart-summary {
-    flex: 1;
-    min-width: 280px;
-    background-color: #f9f9f9;
+/* src/components/Cart/CartSummary.css */
+
+.cart-summary-card {
+    flex: 1; /* Ocupa el espacio restante, pero con un min-width */
+    min-width: 280px; /* Ancho mínimo para el resumen */
+    background-color: white;
+    border: 1px solid #ddd;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex; /* Usamos flexbox para el contenido */
+    flex-direction: column; /* Apila los elementos */
+    height: fit-content; /* Se ajusta al contenido */
 }
 
-.cart-summary h3 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #34495e;
+.order-summary-card h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
 }
 
-.cart-summary p {
+.summary-item { /* Estilo para líneas como Subtotal */
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #555;
 }
 
-.cart-summary hr {
-    border: none;
-    border-top: 1px dashed #ccc;
-    margin: 20px 0;
+.summary-item span:first-child {
+    font-weight: normal;
+}
+.summary-item span:last-child {
+    font-weight: bold;
+    color: #333;
 }
 
-.cart-summary h4 {
+.cart-summary-card hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+}
+
+.summary-total-final { /* Estilo para la línea "Total a Pagar" */
     display: flex;
     justify-content: space-between;
-    font-size: 1.4rem;
-    color: #2c3e50;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #000;
     margin-top: 20px;
 }
 
-.summary-value {
-    font-weight: bold;
-    color: #000;
-}
-
-.total-value {
-    color: #28a745; /* Color para el total */
-}
-
-.coupon-section {
-    display: flex;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    gap: 10px;
-}
-
-.coupon-input {
-    flex-grow: 1;
-    padding: 8px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 0.95rem;
-}
-
-.apply-coupon-btn {
-    background-color: #17a2b8; /* Azul claro */
-    padding: 8px 12px;
-    font-size: 0.95rem;
-}
-
-.apply-coupon-btn:hover {
-    background-color: #138496;
-}
-
-.discount-applied {
-    color: #28a745; /* Verde para descuentos */
-    font-weight: bold;
+/* Media Queries para Responsividad */
+@media (max-width: 768px) {
+    .order-summary-card {
+        min-width: unset;
+        width: 100%;
+    }
 }

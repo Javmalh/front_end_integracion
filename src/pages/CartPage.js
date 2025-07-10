@@ -1,77 +1,113 @@
-// src/components/CartPage.js
 import React from 'react';
-// Asegúrate de que la ruta a tu CartProvider sea la correcta
-// Si CartContext.js está en src/context, la ruta sería:
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-// Si lo dejaste en src/components/Cart, entonces esta ruta está bien:
-// import { useCart } from './Cart/CartProvider';
-
-import CartItem from '../components/Cart/CartItem'; // Este componente necesita ser actualizado
-import CartSummary from '../components/Cart/CartSummary'; // Este componente también puede necesitar ser actualizado
+import CartItem from '../components/Cart/CartItem';
+import CartSummary from '../components/Cart/CartSummary';
 import './CartPage.css';
 
 function CartPage() {
-    // Accede a las propiedades del carrito desde el contexto local
-    const { cart, removeItem, updateItemQuantity, getTotalItems, getTotalPrice, clearCart } = useCart();
+    const { cart, removeItem, updateItemQuantity, getTotalItems, getTotalPrice, clearCart, setCart } = useCart();
+    const navigate = useNavigate();
 
-    // Elimina loadingCart y cartError, ya que el carrito es local y carga síncrona
-    // Puedes tener un estado de carga para el checkout si quieres.
     const [isProcessingCheckout, setIsProcessingCheckout] = React.useState(false);
     const [checkoutError, setCheckoutError] = React.useState(null);
 
-    // Si el carrito está vacío
-    if (getTotalItems() === 0) {
+    const validItems = React.useMemo(() =>
+            cart.items.filter(item =>
+                item?.product?.id && item?.sucursal?.id && typeof item.quantity === 'number' && item.quantity >= 1
+            ),
+        [cart.items]
+    );
+
+    console.debug('Estado actual del carrito (depuración):', {
+        totalItems: cart.items.length,
+        validItemsCount: validItems.length,
+        itemsDetail: cart.items.map(item => ({
+            productId: item?.product?.id,
+            sucursalId: item?.sucursal?.id,
+            quantity: item?.quantity,
+            isValid: !!(item?.product?.id && item?.sucursal?.id && typeof item.quantity === 'number' && item.quantity >= 1)
+        }))
+    });
+
+    React.useEffect(() => {
+        if (cart.items.length !== validItems.length) {
+            console.warn('CartPage: Se encontraron ítems inválidos o con cantidad no numérica/cero. Limpiando el carrito...');
+            setCart(prevCart => ({ ...prevCart, items: validItems }));
+        }
+    }, [cart.items, validItems, setCart]);
+
+    if (validItems.length === 0) {
         return (
             <div className="cart-page empty-cart-message-container">
                 <h2>Tu Carrito de Compras</h2>
                 <p>Tu carrito está vacío. ¡Es hora de agregar algunas herramientas!</p>
-                <a href="/" className="back-to-shop-button">Volver a la Tienda</a>
+                <Link to="/" className="back-to-shop-button">Volver a la tienda</Link>
             </div>
         );
     }
 
     const handleCheckout = async () => {
         setIsProcessingCheckout(true);
-        setCheckoutError(null); // Limpiar errores previos
+        setCheckoutError(null);
 
         try {
-            const API_BASE_URL = 'http://localhost:8080/api'; // <--- ¡IMPORTANTE! Ajusta esta URL a la de tu backend de Spring Boot
-            // Si el usuario está logueado, deberías enviar el token de autenticación
-            const jwtToken = localStorage.getItem('jwtToken'); // Obtener el token del localStorage
+            // --- ¡DEPURACIÓN ADICIONAL AQUÍ! ---
+            console.log("CartPage (handleCheckout): Verificando total antes de enviar al backend.");
+            console.log("CartPage (handleCheckout): Resultado de getTotalPrice():", getTotalPrice());
+            console.log("CartPage (handleCheckout): Valor de getTotalPrice().total:", getTotalPrice().total);
+            // ------------------------------------
 
-            // Prepara los ítems del carrito para enviar al backend.
-            // Solo envía la información mínima necesaria para que el backend valide y cree la orden.
-            const orderItems = cart.items.map(item => ({
-                productId: item.productId,
-                branchId: item.branchId,
-                quantity: item.quantity
-            }));
+            const API_BASE_URL = 'http://localhost:8080/api';
+            const jwtToken = localStorage.getItem('jwtToken');
 
-            const response = await fetch(`${API_BASE_URL}/orders/checkout`, { // Ajusta a tu endpoint de checkout
+            const orderItems = validItems
+                .map(item => ({
+                    productId: item.product.id,
+                    sucursalId: item.sucursal.id,
+                    quantity: item.quantity
+                }));
+
+            const mainSucursalName = validItems.length > 0 ? validItems[0].sucursal.nombre : 'Desconocida';
+
+            const checkoutTotalAmount = getTotalPrice().total || 0;
+            if (checkoutTotalAmount <= 0) {
+                throw new Error("El monto total del carrito debe ser mayor a cero para proceder al pago.");
+            }
+
+            const response = await fetch(`${API_BASE_URL}/payment/checkout`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Si el backend requiere autenticación, incluye el token:
                     ...(jwtToken && { 'Authorization': `Bearer ${jwtToken}` })
                 },
                 body: JSON.stringify({
                     items: orderItems,
-                    // Puedes añadir aquí otros datos como:
-                    // shippingAddress: "Calle Falsa 123",
-                    // paymentMethod: "Tarjeta de Crédito",
+                    totalAmount: checkoutTotalAmount,
+                    sucursalName: mainSucursalName
                 })
             });
 
             if (!response.ok) {
-                const errorData = await response.json(); // Leer los detalles del error del backend
-                throw new Error(errorData.message || 'Error al finalizar la compra');
+                let errorDetails = 'Error desconocido al procesar la orden desde el servidor.';
+                try {
+                    const errorJson = await response.json();
+                    errorDetails = errorJson.message || errorJson.error || errorDetails;
+                } catch (e) {
+                    const errorText = await response.text();
+                    errorDetails = errorText || `Error ${response.status}: ${response.statusText}. ` + errorDetails;
+                    console.warn('Respuesta de error del backend no es JSON, usando texto plano:', errorText);
+                }
+                throw new Error(errorDetails);
             }
 
             const result = await response.json();
-            alert('¡Orden procesada con éxito! ID de la orden: ' + result.orderId);
-            clearCart(); // Vaciar el carrito local después de la compra exitosa
-            // Redirigir al usuario a una página de confirmación
-            // window.location.href = '/order-confirmation/' + result.orderId;
+
+            if (result && result.url) {
+                window.location.href = result.url;
+            } else {
+                throw new Error('No se recibió una URL de pago válida de Transbank.');
+            }
 
         } catch (error) {
             console.error('Error durante el checkout:', error);
@@ -88,25 +124,31 @@ function CartPage() {
             {checkoutError && <div className="checkout-error-message">{checkoutError}</div>}
             <div className="cart-content">
                 <div className="cart-items-list">
-                    {cart.items.map(item => (
-                        // Pasamos el 'item' completo y las funciones de manejo al CartItem
+                    {validItems.map(item => (
                         <CartItem
-                            key={`${item.productId}-${item.branchId}`} // Usa una clave única combinando producto y sucursal
+                            key={`${item.product.id}-${item.sucursal.id}`}
                             item={item}
                             removeItem={removeItem}
                             updateItemQuantity={updateItemQuantity}
                         />
                     ))}
-                    <button onClick={clearCart} className="clear-cart-button">Vaciar Carrito</button>
+                    {validItems.length > 0 && (
+                        <button onClick={clearCart} className="clear-cart-button">
+                            Vaciar Carrito
+                        </button>
+                    )}
                 </div>
-                {/* Pasa el carrito y las funciones de total a CartSummary si las necesita */}
-                <CartSummary cart={cart} getTotalPrice={getTotalPrice} />
+                <CartSummary total={getTotalPrice()} />
             </div>
             <div className="cart-actions">
-                <button className="continue-shopping-btn" onClick={() => window.location.href = '/'}>
+                <Link to="/" className="continue-shopping-btn">
                     Continuar Comprando
-                </button>
-                <button className="checkout-btn" onClick={handleCheckout} disabled={isProcessingCheckout}>
+                </Link>
+                <button
+                    className="checkout-btn"
+                    onClick={handleCheckout}
+                    disabled={isProcessingCheckout || validItems.length === 0}
+                >
                     {isProcessingCheckout ? 'Procesando...' : 'Ir a Pagar'}
                 </button>
             </div>
