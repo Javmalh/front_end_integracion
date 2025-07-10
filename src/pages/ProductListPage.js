@@ -7,9 +7,7 @@ import { useCart } from '../context/CartContext';
 import { getProducts } from '../services/api';
 import api from '../services/api';
 
-// --- Importa toast ---
 import { toast } from 'react-toastify';
-// --------------------
 
 function ProductListPage() {
     const [selectedFilters, setSelectedFilters] = useState([]);
@@ -18,7 +16,7 @@ function ProductListPage() {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [sucursales, setSucursales] = useState([]);
-    const [selectedSucursalId, setSelectedSucursalId] = useState('');
+    const [selectedSucursalId, setSelectedSucursalId] = useState(''); // Estado inicial para "Todas las Sucursales"
 
     const location = useLocation();
     const { addItem } = useCart();
@@ -36,11 +34,23 @@ function ProductListPage() {
         setSearchTerm('');
     };
 
+    // --- MODIFICACIÓN CLAVE AQUÍ ---
     const handleSucursalChange = (e) => {
-        setSelectedSucursalId(parseInt(e.target.value, 10));
-        console.log("ProductListPage: Sucursal seleccionada:", parseInt(e.target.value, 10));
+        const value = e.target.value;
+        if (value === '') {
+            setSelectedSucursalId(''); // Si el valor es cadena vacía, mantenlo como cadena vacía
+            console.log("ProductListPage: Sucursal seleccionada: Todas las Sucursales");
+        } else {
+            setSelectedSucursalId(parseInt(value, 10)); // Si es un ID, parsearlo
+            console.log("ProductListPage: Sucursal seleccionada:", parseInt(value, 10));
+        }
     };
+    // --------------------------------
 
+    // --- MODIFICACIÓN CLAVE AQUÍ ---
+    // Elimina selectedSucursalId de las dependencias si quieres que esto solo se ejecute UNA VEZ al montar
+    // para establecer la primera sucursal por defecto. Si el usuario ya ha seleccionado '' (Todas) o un ID,
+    // NO debe sobrescribirse automáticamente.
     useEffect(() => {
         const fetchSucursales = async () => {
             console.log("ProductListPage: Cargando sucursales...");
@@ -48,8 +58,9 @@ function ProductListPage() {
                 const response = await api.get('/sucursales');
                 console.log("Sucursales cargadas del backend:", response.data);
                 setSucursales(response.data);
-                // Si no hay ninguna sucursal seleccionada, selecciona la primera por defecto
-                if (response.data.length > 0 && !selectedSucursalId) {
+                // Solo selecciona la primera sucursal si NINGUNA ha sido seleccionada explícitamente todavía
+                // (es decir, si selectedSucursalId sigue en su estado inicial '').
+                if (response.data.length > 0 && selectedSucursalId === '') {
                     setSelectedSucursalId(response.data[0].id);
                 }
             } catch (err) {
@@ -57,7 +68,8 @@ function ProductListPage() {
             }
         };
         fetchSucursales();
-    }, [selectedSucursalId]); // Agrega selectedSucursalId para re-evaluar si debe seleccionar una por defecto
+    }, []); // <-- Array de dependencias vacío para que se ejecute solo al montar
+    // --------------------------------
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -77,7 +89,7 @@ function ProductListPage() {
             const params = {
                 searchTerm: searchTerm,
                 categories: selectedFilters.length > 0 ? selectedFilters.join(',') : undefined,
-                sucursalId: selectedSucursalId || undefined
+                sucursalId: selectedSucursalId === '' ? undefined : selectedSucursalId // Si selectedSucursalId es '', no envíes el parámetro
             };
 
             console.log("ProductListPage: Parámetros de búsqueda enviados a getProducts:", params);
@@ -120,11 +132,16 @@ function ProductListPage() {
         let selectedBranch = sucursales.find(s => s.id === selectedSucursalId);
 
         if (!selectedBranch && sucursales.length > 0) {
-            selectedBranch = sucursales[0]; // Si no se selecciona, toma la primera disponible
+            // Si selectedSucursalId es '', busca la opción "Todas las Sucursales" o similar para no fallar
+            // o simplemente usa el primer elemento si el usuario no seleccionó una específica.
+            // Esto podría necesitar una lógica más robusta si "Todas las Sucursales" no es un ID válido.
+            // Por ahora, si no se encuentra por ID, usa la primera disponible si hay alguna.
+            selectedBranch = sucursales[0];
+            toast.warn('No se ha seleccionado una sucursal específica. Se utilizará la primera sucursal disponible.', { autoClose: 3000 });
         }
 
+
         if (!selectedBranch) {
-            // --- Reemplazar alert por toast.error para errores ---
             toast.error('No hay sucursales disponibles para añadir este producto. Por favor, selecciona una.', {
                 position: "top-right",
                 autoClose: 5000,
@@ -139,17 +156,15 @@ function ProductListPage() {
         }
 
         addItem(product, selectedBranch, 1);
-        // --- Reemplazar alert por toast.success para éxito ---
         toast.success(`${product.nombre} ha sido añadido al carrito en ${selectedBranch.nombre}!`, {
             position: "top-right",
-            autoClose: 3000, // Duración más corta para mensajes de éxito
+            autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
         });
-        // ----------------------------------------------------
         console.log("Producto añadido:", product.nombre, "a sucursal:", selectedBranch.nombre);
     };
 
@@ -184,7 +199,7 @@ function ProductListPage() {
                         onChange={handleSucursalChange}
                         className="sucursal-select"
                     >
-                        <option value="">Todas las Sucursales</option>
+                        <option value="">Todas las Sucursales</option> {/* Valor vacío para 'Todas' */}
                         {sucursales.map(sucursal => (
                             <option key={sucursal.id} value={sucursal.id}>
                                 {sucursal.nombre}
