@@ -4,8 +4,12 @@ import FilterSidebar from '../components/FilterSidebar/FilterSidebar';
 import axios from 'axios';
 import './ProductListPage.css';
 import { useCart } from '../context/CartContext';
-import { getProducts } from '../services/api'; // Importa getProducts desde api.js
-import api from '../services/api'; // Importa la instancia api si la necesitas para sucursales
+import { getProducts } from '../services/api';
+import api from '../services/api';
+
+// --- Importa toast ---
+import { toast } from 'react-toastify';
+// --------------------
 
 function ProductListPage() {
     const [selectedFilters, setSelectedFilters] = useState([]);
@@ -17,7 +21,7 @@ function ProductListPage() {
     const [selectedSucursalId, setSelectedSucursalId] = useState('');
 
     const location = useLocation();
-    const { addItem } = useCart(); // addItem del contexto local del carrito
+    const { addItem } = useCart();
 
     const handleFilterChange = useCallback((newFilters) => {
         console.log("ProductListPage: Filtros de categoría actualizados:", newFilters);
@@ -41,16 +45,19 @@ function ProductListPage() {
         const fetchSucursales = async () => {
             console.log("ProductListPage: Cargando sucursales...");
             try {
-                // Usar 'api' para la petición de sucursales si requiere token
                 const response = await api.get('/sucursales');
                 console.log("Sucursales cargadas del backend:", response.data);
                 setSucursales(response.data);
+                // Si no hay ninguna sucursal seleccionada, selecciona la primera por defecto
+                if (response.data.length > 0 && !selectedSucursalId) {
+                    setSelectedSucursalId(response.data[0].id);
+                }
             } catch (err) {
                 console.error("ProductListPage: Error al cargar sucursales:", err);
             }
         };
         fetchSucursales();
-    }, []);
+    }, [selectedSucursalId]); // Agrega selectedSucursalId para re-evaluar si debe seleccionar una por defecto
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -117,13 +124,32 @@ function ProductListPage() {
         }
 
         if (!selectedBranch) {
-            alert('No hay sucursales disponibles para añadir este producto. Por favor, carga las sucursales o selecciona una.');
+            // --- Reemplazar alert por toast.error para errores ---
+            toast.error('No hay sucursales disponibles para añadir este producto. Por favor, selecciona una.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             console.error("Error: No se encontró una sucursal para añadir el producto.");
             return;
         }
 
-        addItem(product, selectedBranch, 1); // Llama a addItem del contexto con el producto y la sucursal
-        alert(`${product.nombre} ha sido añadido al carrito en la sucursal ${selectedBranch.nombre}.`);
+        addItem(product, selectedBranch, 1);
+        // --- Reemplazar alert por toast.success para éxito ---
+        toast.success(`${product.nombre} ha sido añadido al carrito en ${selectedBranch.nombre}!`, {
+            position: "top-right",
+            autoClose: 3000, // Duración más corta para mensajes de éxito
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+        // ----------------------------------------------------
         console.log("Producto añadido:", product.nombre, "a sucursal:", selectedBranch.nombre);
     };
 
