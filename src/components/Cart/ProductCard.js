@@ -1,11 +1,11 @@
 import React from 'react';
-import { useCart } from '../context/CartContext'; // Asegúrate de que esta ruta sea correcta
-import './ProductCard.css'; // Asegúrate de que esta ruta sea correcta
+import { useCart } from '../context/CartContext';
+import './ProductCard.css';
 
 function ProductCard({ product }) {
-    const { addItem } = useCart(); // Ahora addItem interactúa con el backend
+    const { addItem } = useCart();
 
-    // Helper para formatear precios en CLP (puedes reutilizarlo o tener uno global si prefieres)
+
     const formatPriceCLP = (price) => {
         if (price == null || isNaN(price)) {
             return '$0';
@@ -19,11 +19,8 @@ function ProductCard({ product }) {
         return formatter.format(price);
     };
 
-    const handleAddToCart = async () => { // Hacerla asíncrona para esperar la respuesta del backend
-        // Asegúrate de que esta función addItem esté actualizada en tu CartContext para añadir la sucursal por defecto si es necesario
-        // Como tu ProductListPage lo hace, deberías replicar la lógica de "sucursal por defecto" aquí si este ProductCard
-        // se usa en un contexto donde no se selecciona sucursal.
-        const success = await addItem(product, /* quantity = 1, defaultBranch si es necesario */ 1); // Asume cantidad 1
+    const handleAddToCart = async () => {
+        const success = await addItem(product,1);
         if (success) {
             alert(`${product.nombre} añadido al carrito!`);
         } else {
@@ -34,12 +31,12 @@ function ProductCard({ product }) {
     return (
         <div className="product-card">
             <img
-                src={product.imageUrl || 'https://via.placeholder.com/150?text=Producto'} // <--- CORRECCIÓN AQUÍ: imageUrl
+                src={product.imageUrl || 'https://via.placeholder.com/150?text=Producto'}
                 alt={product.nombre}
                 className="product-image"
             />
             <h3 className="product-name">{product.nombre}</h3>
-            <p className="product-price">{formatPriceCLP(product.precio)}</p> {/* Usamos la función de formato */}
+            <p className="product-price">{formatPriceCLP(product.precio)}</p> {}
             <button onClick={handleAddToCart} className="add-to-cart-btn">Añadir al Carrito</button>
         </div>
     );

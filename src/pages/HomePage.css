@@ -1,17 +1,15 @@
-/* src/pages/HomePage.css */
 
-/* Estilos de botones secundarios (Categorías y Ofertas) */
 .secondary-nav {
     max-width: 1200px;
-    margin: 20px auto; /* Espacio debajo del header */
+    margin: 20px auto;
     padding: 0 20px;
     display: flex;
-    justify-content: flex-start; /* Alinear a la izquierda */
-    gap: 15px; /* Espacio entre los botones */
+    justify-content: flex-start;
+    gap: 15px;
 }
 
 .nav-button-secondary {
-    background-color: #007bff; /* Un azul para estos botones */
+    background-color: #007bff;
     color: white;
     padding: 12px 25px;
     border: none;
@@ -21,8 +19,8 @@
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    text-decoration: none; /* Importante para los Links */
-    display: inline-block; /* Para asegurar que el padding se aplique correctamente al Link */
+    text-decoration: none;
+    display: inline-block;
 }
 
 .nav-button-secondary:hover {
@@ -30,7 +28,7 @@
     transform: translateY(-2px);
 }
 
-/* Mantiene los estilos existentes para .home-page, .hero-section, .btn-primary, .featured-products, .product-grid, .product-card, .price */
+
 .home-page {
     padding: 20px;
     max-width: 1200px;
@@ -59,7 +57,7 @@
 }
 
 .btn-primary {
-    background-color: #4CAF50; /* Verde FerreMax */
+    background-color: #4CAF50;
     color: white;
     padding: 12px 25px;
     border: none;
@@ -67,8 +65,8 @@
     font-size: 1.1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    text-decoration: none; /* Importante para el Link */
-    display: inline-block; /* Para asegurar que el padding se aplique correctamente al Link */
+    text-decoration: none;
+    display: inline-block;
 }
 
 .btn-primary:hover {
@@ -76,7 +74,7 @@
 }
 
 .featured-products {
-    margin-bottom: 40px; /* Añadido espacio al final de la sección */
+    margin-bottom: 40px;
 }
 
 .featured-products h3 {
@@ -90,7 +88,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 25px;
-    justify-content: center; /* Centrar las tarjetas si hay pocas */
+    justify-content: center;
 }
 
 .product-card {
@@ -101,7 +99,7 @@
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease;
-    /* Flexbox para alinear contenido dentro de la tarjeta */
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -117,9 +115,9 @@
     color: #333;
     margin-top: 0;
     margin-bottom: 10px;
-    min-height: 2.8em; /* Ajusta si el nombre del producto es muy largo */
+    min-height: 2.8em;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Limita a 2 líneas */
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -129,9 +127,9 @@
     color: #666;
     font-size: 0.95rem;
     margin-bottom: 15px;
-    min-height: 3em; /* Para la descripción, si la usas */
+    min-height: 3em;
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Limita a 3 líneas */
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -140,21 +138,21 @@
 .product-card .price {
     font-size: 1.3rem;
     font-weight: bold;
-    color: #e67e22; /* Un naranja para precios */
-    margin-top: auto; /* Empuja el precio y el botón hacia abajo */
+    color: #e67e22;
+    margin-top: auto;
 }
 
-/* Estilos para la imagen del producto */
+
 .product-image {
     max-width: 100%;
-    height: 150px; /* Altura fija para las imágenes */
-    object-fit: contain; /* Asegura que la imagen se ajuste sin cortarse */
+    height: 150px;
+    object-fit: contain;
     margin-bottom: 15px;
     border-radius: 4px;
 }
 
-/* Estilos para mensajes de carga y error */
-.featured-products > p { /* Selecciona los párrafos directamente dentro de featured-products */
+
+.featured-products > p {
     text-align: center;
     font-size: 1.1rem;
     color: #666;
@@ -162,31 +160,10 @@
 }
 
 .error-message {
-    color: #dc3545; /* Rojo para mensajes de error */
+    color: #dc3545;
     font-weight: bold;
 }
 
-/* Puedes añadir estilos para el botón "Ver Detalles" si lo descomentas */
-/*
-.view-details-button {
-    background-color: #007bff;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 10px;
-}
-.view-details-button:hover {
-    background-color: #0056b3;
-}
-*/
-
-/* Responsividad (ajusta según necesites) */
 @media (max-width: 768px) {
     .hero-section h2 {
         font-size: 2.5rem;
@@ -204,7 +181,7 @@
 
 @media (max-width: 480px) {
     .secondary-nav {
-        flex-direction: column; /* Apila los botones en pantallas pequeñas */
+        flex-direction: column;
         align-items: center;
     }
     .hero-section {
@@ -214,7 +191,7 @@
         font-size: 2rem;
     }
     .product-grid {
-        grid-template-columns: 1fr; /* Una columna en móviles */
+        grid-template-columns: 1fr;
     }
     .product-card {
         max-width: 300px;

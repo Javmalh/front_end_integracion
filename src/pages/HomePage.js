@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ProductSlider from '../components/ProductSlider/ProductSlider';
 import { Link } from 'react-router-dom';
 import './HomePage.css';
-import { getProducts } from '../services/api'; // Importamos getProducts de api.js
+import { getProducts } from '../services/api';
 
 function HomePage() {
     const [productosDestacados, setProductosDestacados] = useState([]);
@@ -12,11 +12,9 @@ function HomePage() {
     useEffect(() => {
         const fetchProductosDestacados = async () => {
             try {
-                // Utiliza la función getProducts con los parámetros necesarios para popularidad
-                // El backend maneja la lógica de popularidad, por lo que aquí solo la llamamos.
-                const response = await getProducts({ limit: 8 }); // getProducts ya sabe cómo pedir populares
+                const response = await getProducts({ limit: 8 });
 
-                if (!response.data) { // getProducts devuelve data en response.data
+                if (!response.data) {
                     throw new Error(`Error: No se recibieron datos de productos populares.`);
                 }
                 setProductosDestacados(response.data);
@@ -47,7 +45,6 @@ function HomePage() {
         <div className="home-page">
             <div className="secondary-nav">
                 <Link to="/productos" className="nav-button-secondary">Productos</Link>
-                <button className="nav-button-secondary">Ofertas</button>
             </div>
 
             <ProductSlider />

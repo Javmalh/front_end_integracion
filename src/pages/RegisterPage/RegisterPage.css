@@ -1,9 +1,9 @@
-/* Reutiliza la mayoría de los estilos de login para consistencia */
+
 .register-page-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Ocupa el 100% de la altura de la vista */
+    min-height: 100vh;
     background-color: #f0f2f5;
     padding: 20px;
     box-sizing: border-box;
@@ -66,7 +66,7 @@
     font-size: 18px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-bottom: 10px; /* Espacio debajo del botón de registro */
+    margin-bottom: 10px;
 }
 
 .register-button:hover {
@@ -89,7 +89,7 @@
     text-decoration: underline;
 }
 
-/* --- NUEVO ESTILO: Botón Volver a Inicio (reutilizado de LoginPage.css) --- */
+
 .back-to-home-link {
     margin-top: 15px;
     font-size: 14px;

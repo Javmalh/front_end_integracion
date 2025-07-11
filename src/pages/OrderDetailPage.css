@@ -1,0 +1,138 @@
+
+
+.order-detail-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+}
+
+.order-detail-container h2 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 25px;
+    font-size: 2rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.loading-message, .error-message, .no-order-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.1rem;
+    color: #555;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.error-message {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.order-summary-box {
+    background-color: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.order-summary-box p {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.order-summary-box strong {
+    color: #333;
+}
+
+.order-summary-box .status-completed {
+    color: #28a745;
+    font-weight: bold;
+}
+.order-summary-box .status-rejected {
+    color: #dc3545;
+    font-weight: bold;
+}
+.order-summary-box .status-pending_payment {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.order-summary-box .transaction-token-display {
+    word-break: break-all;
+    font-size: 0.9em;
+    color: #777;
+}
+
+.order-detail-container h3 {
+    font-size: 1.6rem;
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #ddd;
+    padding-bottom: 5px;
+}
+
+.order-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.order-item-card {
+    background-color: #fcfcfc;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.order-item-card p {
+    margin: 5px 0;
+}
+
+.order-item-card .item-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.order-item-card .item-total {
+    font-weight: bold;
+    color: #000;
+    margin-top: 10px;
+}
+
+.back-button {
+    display: inline-block;
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+}
+
+
+@media (max-width: 768px) {
+    .order-detail-container {
+        padding: 15px;
+    }
+    .order-detail-container h2 {
+        font-size: 1.8rem;
+    }
+}

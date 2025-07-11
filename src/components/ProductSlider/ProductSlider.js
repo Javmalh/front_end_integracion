@@ -16,9 +16,9 @@ function ProductSlider() {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-        }, 5000); // Cambia de imagen cada 5 segundos (5000 ms)
+        }, 5000);
 
-        return () => clearInterval(interval); // Limpia el intervalo al desmontar el componente
+        return () => clearInterval(interval);
     }, []);
 
     return (
@@ -31,8 +31,8 @@ function ProductSlider() {
                 >
                     <div className="slide-content">
                         <h2>{image.title}</h2>
-                        {/* Añadir más texto o un botón aquí */}
-                        {/* <button className="btn-slider">Ver más</button> */}
+                        {}
+                        {}
                     </div>
                 </div>
             ))}

@@ -1,4 +1,4 @@
-/* src/pages/PaymentResultPage.css */
+
 .payment-result-container {
     max-width: 600px;
     margin: 50px auto;
@@ -10,21 +10,21 @@
 }
 
 .payment-result-container.success {
-    background-color: #e6ffe6; /* Verde claro */
-    border: 1px solid #4CAF50; /* Borde verde */
+    background-color: #e6ffe6;
+    border: 1px solid #4CAF50;
     color: #333;
 }
 
 .payment-result-container.error {
-    background-color: #ffe6e6; /* Rojo claro */
-    border: 1px solid #F44336; /* Borde rojo */
+    background-color: #ffe6e6;
+    border: 1px solid #F44336;
     color: #333;
 }
 
 .payment-result-container h2 {
     font-size: 2rem;
     margin-bottom: 20px;
-    color: inherit; /* Hereda del contenedor */
+    color: inherit;
 }
 
 .payment-result-container.success h2 {
@@ -42,7 +42,7 @@
 }
 
 .payment-result-container .transaction-details {
-    background-color: rgba(0, 0, 0, 0.05); /* Fondo suave para detalles */
+    background-color: rgba(0, 0, 0, 0.05);
     padding: 15px;
     border-radius: 5px;
     margin-top: 20px;
@@ -77,7 +77,7 @@
     background-color: #0056b3;
 }
 
-/* Responsividad */
+
 @media (max-width: 600px) {
     .payment-result-container {
         margin: 20px auto;

@@ -1,7 +1,7 @@
 import React from 'react';
 import './CartItem.css'; // Asegúrate de tener este CSS
 
-// Helper para formatear precios en CLP (definido aquí o en un archivo de utilidades)
+
 const formatPriceCLP = (price) => {
     if (price == null || isNaN(price)) {
         return '$0';
@@ -15,21 +15,21 @@ const formatPriceCLP = (price) => {
     return formatter.format(price);
 };
 
-// `item` contendrá { productId, product: {id, nombre, precio, imageUrl}, branchId, sucursal: {id, nombre}, quantity }
+
 function CartItem({ item, removeItem, updateItemQuantity }) {
     const handleRemove = () => {
-        // Llama a removeItem con el product.id y sucursal.id
+
         removeItem(item.product.id, item.sucursal.id);
     };
 
     const handleQuantityChange = (e) => {
-        const newQuantity = parseInt(e.target.value, 10); // Base 10 para parseInt
-        // Asegura que es un número válido y no menor a 1
+        const newQuantity = parseInt(e.target.value, 10);
+
         if (!isNaN(newQuantity) && newQuantity >= 1) {
-            // Llama a updateItemQuantity con product.id, sucursal.id y la nueva cantidad
+
             updateItemQuantity(item.product.id, item.sucursal.id, newQuantity);
         } else if (isNaN(newQuantity) || newQuantity < 1) {
-            // Si el valor no es un número o es menor a 1, forzar a 1
+
             updateItemQuantity(item.product.id, item.sucursal.id, 1);
         }
     };
@@ -45,7 +45,7 @@ function CartItem({ item, removeItem, updateItemQuantity }) {
             </div>
             <div className="item-details-main">
                 <h4 className="item-name">{item.product.nombre}</h4>
-                <p className="item-branch">Sucursal: {item.sucursal.nombre}</p> {/* Accede a item.sucursal.nombre */}
+                <p className="item-branch">Sucursal: {item.sucursal.nombre}</p> {}
                 <p className="item-price-unit">Precio Unitario: {formatPriceCLP(item.product.precio)}</p>
 
                 <div className="item-quantity-control">

@@ -20,6 +20,9 @@ function Footer() {
                         <li><Link to="/productos">Productos</Link></li>
                         <li><Link to="/ofertas">Ofertas</Link></li>
                         <li><Link to="/sucursales">Sucursales</Link></li>
+                        {}
+                        <li><Link to="/politica-privacidad">Política de Privacidad</Link></li>
+                        <li><Link to="/terminos-condiciones">Términos y Condiciones</Link></li>
                     </ul>
                 </div>
 
@@ -49,7 +52,8 @@ function Footer() {
 
             <div className="footer-bottom">
                 <p>&copy; {currentYear} FerreMax. Todos los derechos reservados.</p>
-                <p><Link to="/privacy">Política de Privacidad</Link> | <Link to="/terms">Términos y Condiciones</Link></p>
+                {}
+                <p><Link to="/politica-privacidad">Política de Privacidad</Link> | <Link to="/terminos-condiciones">Términos y Condiciones</Link></p>
             </div>
         </footer>
     );

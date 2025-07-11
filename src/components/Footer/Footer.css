@@ -1,11 +1,11 @@
 /* src/components/Footer.css - Versión Profesional */
 
 .footer {
-    background-color: #282c34; /* Fondo oscuro, consistente con el header */
-    color: #f0f2f5; /* Texto gris claro */
-    padding: 40px 20px 20px; /* Más padding para un look más espacioso */
-    margin-top: 50px; /* Margen superior para separarlo del contenido */
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+    background-color: #282c34;
+    color: #f0f2f5;
+    padding: 40px 20px 20px;
+    margin-top: 50px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
     font-size: 0.95rem;
 }
 
@@ -13,23 +13,23 @@
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    flex-wrap: wrap; /* Permite que las columnas se envuelvan en pantallas pequeñas */
-    justify-content: space-between; /* Espacio entre las columnas */
-    gap: 30px; /* Espacio entre las secciones */
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 30px;
     padding-bottom: 30px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Separador sutil */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footer-section {
-    flex: 1; /* Cada sección intenta ocupar igual espacio */
-    min-width: 200px; /* Ancho mínimo antes de envolver */
+    flex: 1;
+    min-width: 200px;
 }
 
 .footer-section h3 {
-    color: #61dafb; /* Color azul claro para los títulos de sección */
+    color: #61dafb;
     margin-bottom: 15px;
     font-size: 1.2rem;
-    white-space: nowrap; /* Evita saltos de línea en títulos */
+    white-space: nowrap;
 }
 
 .footer-section p {
@@ -54,11 +54,11 @@
 }
 
 .footer-section ul li a:hover {
-    color: #61dafb; /* Cambia de color al pasar el mouse */
+    color: #61dafb;
     text-decoration: underline;
 }
 
-/* Estilos para iconos de redes sociales */
+
 .social-icons {
     display: flex;
     gap: 15px;
@@ -67,7 +67,7 @@
 
 .social-icons a {
     color: #f0f2f5;
-    font-size: 1.5rem; /* Tamaño de los iconos */
+    font-size: 1.5rem;
     transition: color 0.3s ease, transform 0.2s ease;
 }
 
@@ -76,12 +76,12 @@
     transform: translateY(-3px);
 }
 
-/* Sección inferior del footer (copyright y enlaces legales) */
+
 .footer-bottom {
     text-align: center;
     padding-top: 20px;
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.7); /* Texto más tenue */
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .footer-bottom p {
@@ -99,19 +99,19 @@
     text-decoration: underline;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
     .footer-container {
-        flex-direction: column; /* Apila las columnas en pantallas pequeñas */
-        align-items: center; /* Centra las secciones */
+        flex-direction: column;
+        align-items: center;
         text-align: center;
     }
 
     .footer-section {
-        margin-bottom: 30px; /* Espacio entre secciones apiladas */
+        margin-bottom: 30px;
     }
 
     .social-icons {
-        justify-content: center; /* Centra los iconos sociales */
+        justify-content: center;
     }
 }

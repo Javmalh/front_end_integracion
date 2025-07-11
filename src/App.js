@@ -1,5 +1,3 @@
-// src/App.js
-
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header/Header';
@@ -16,17 +14,27 @@ import ProductListPage from './pages/ProductListPage';
 import AccountSettingsPage from './pages/AccountSettingsPage';
 import WorkerInventoryPage from './pages/WorkerInventoryPage';
 
-// --- ¡NUEVAS IMPORTACIONES PARA PÁGINAS DE PAGO! ---
+// Importaciones de páginas de pago
 import PaymentSuccessPage from './pages/PaymentSuccessPage';
 import PaymentFailurePage from './pages/PaymentFailurePage';
 
-// --- IMPORTACIONES PARA REACT-TOASTIFY ---
+// Importaciones de páginas estáticas
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsAndConditionsPage from './pages/TermsAndConditionsPage';
+
+
+import MyOrdersPage from './pages/MyOrdersPage';
+import OrderDetailPage from './pages/OrderDetailPage';
+
+// Importación para historial de transacciones (pagos)
+import TransactionHistoryPage from './pages/TransactionHistoryPage';
+
+// Importaciones para React-Toastify
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Estilos CSS de Toastify
+import 'react-toastify/dist/ReactToastify.css';
 
 import './App.css';
 
-// Componente para hacer scroll al top en cada cambio de ruta
 function ScrollToTop() {
     const { pathname } = useLocation();
 
@@ -87,7 +95,6 @@ function App() {
     };
 
     useEffect(() => {
-        // La lógica de recuperación de localStorage ya está en los useState initializers
     }, []);
 
     const shouldShowHeaderAndFooter = location.pathname !== '/login' &&
@@ -95,7 +102,6 @@ function App() {
 
     return (
         <CartProvider>
-            {/* --- CONTENEDOR DE TOASTIFY --- */}
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
@@ -127,30 +133,36 @@ function App() {
                         <Route path="/sucursales" element={<Sucursales />} />
                         <Route path="/productos" element={<ProductListPage />} />
 
-                        {/* --- ¡NUEVAS RUTAS PARA PÁGINAS DE PAGO! --- */}
-                        {/* Estas rutas no necesitan protección inicial, ya que Transbank las redirige */}
+                        {/* Rutas de Pago */}
                         <Route path="/payment-success" element={<PaymentSuccessPage />} />
                         <Route path="/payment-failure" element={<PaymentFailurePage />} />
 
+                        {/* Rutas Estáticas */}
+                        <Route path="/politica-privacidad" element={<PrivacyPolicyPage />} />
+                        <Route path="/terminos-condiciones" element={<TermsAndConditionsPage />} />
+
+                        {/* --- RUTAS DE ÓRDENES Y HISTORIAL DE PAGOS --- */}
                         {isLoggedIn ? (
                             <>
                                 <Route path="/worker-dashboard" element={<WorkerDashboardPage />} />
                                 <Route path="/worker-inventory" element={<WorkerInventoryPage />} />
-                                <Route
-                                    path="/profile"
-                                    element={<UserProfilePage onProfileUpdate={handleUserNameUpdate} />}
-                                />
-                                <Route
-                                    path="/settings"
-                                    element={<AccountSettingsPage onProfileUpdate={handleUserNameUpdate} />}
-                                />
+                                <Route path="/profile" element={<UserProfilePage onProfileUpdate={handleUserNameUpdate} />} />
+                                <Route path="/settings" element={<AccountSettingsPage onProfileUpdate={handleUserNameUpdate} />} />
+
+                                <Route path="/my-transactions" element={<TransactionHistoryPage />} />
+                                <Route path="/my-orders" element={<MyOrdersPage />} />
+                                <Route path="/my-orders/:id" element={<OrderDetailPage />} />
                             </>
                         ) : (
                             <>
-                                <Route path="/profile" element={<RedirectToLogin />} />
+                                {/* Rutas protegidas que redirigen a login si no está logueado */}
                                 <Route path="/worker-dashboard" element={<RedirectToLogin />} />
                                 <Route path="/worker-inventory" element={<RedirectToLogin />} />
+                                <Route path="/profile" element={<RedirectToLogin />} />
                                 <Route path="/settings" element={<RedirectToLogin />} />
+                                <Route path="/my-transactions" element={<RedirectToLogin />} />
+                                <Route path="/my-orders" element={<RedirectToLogin />} />
+                                <Route path="/my-orders/:id" element={<RedirectToLogin />} />
                             </>
                         )}
 
@@ -163,7 +175,7 @@ function App() {
     );
 }
 
-// Componente auxiliar para redirigir a login si el usuario no está logueado
+
 function RedirectToLogin() {
     const navigate = useNavigate();
     useEffect(() => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
-import './PaymentResultPage.css'; // Crearemos un CSS común para ambas páginas de resultado
+import './PaymentResultPage.css';
 
 function PaymentSuccessPage() {
     const location = useLocation();
@@ -15,7 +15,7 @@ function PaymentSuccessPage() {
         if (token_ws) {
             const fetchTransactionStatus = async () => {
                 try {
-                    // Llama al endpoint de tu backend para obtener el estado de la transacción
+
                     const response = await axios.get(`http://localhost:8080/api/payment/status/${token_ws}`);
                     setTransactionStatus(response.data);
                     setLoading(false);

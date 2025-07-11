@@ -1,9 +1,9 @@
 .product-slider {
     position: relative;
     width: 100%;
-    max-width: 1200px; /* Ancho máximo del slider */
-    height: 350px; /* Altura del slider */
-    margin: 30px auto; /* Centrar y dar espacio */
+    max-width: 1200px;
+    height: 350px;
+    margin: 30px auto;
     overflow: hidden;
     border-radius: 10px;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
@@ -19,11 +19,11 @@
     background-position: center;
     opacity: 0;
     transition: opacity 1s ease-in-out;
-    display: flex; /* Para centrar el contenido */
+    display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Sombra para el texto */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 .slide.active {
@@ -33,7 +33,7 @@
 .slide-content {
     text-align: center;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.3); /* Fondo semitransparente para el texto */
+    background-color: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
 }
 
@@ -44,7 +44,7 @@
 }
 
 .btn-slider {
-    background-color: #61dafb; /* Azul claro */
+    background-color: #61dafb;
     color: #282c34;
     padding: 10px 20px;
     border: none;
@@ -59,7 +59,7 @@
     background-color: #21a1f1;
 }
 
-/* Puntos de navegación */
+
 .dots-container {
     position: absolute;
     bottom: 15px;
@@ -67,7 +67,7 @@
     transform: translateX(-50%);
     display: flex;
     gap: 10px;
-    z-index: 10; /* Asegura que los puntos estén por encima de las imágenes */
+    z-index: 10;
 }
 
 .dot {

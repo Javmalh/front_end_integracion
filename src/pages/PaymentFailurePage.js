@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
-import './PaymentResultPage.css'; // CSS común
+import './PaymentResultPage.css';
 
 function PaymentFailurePage() {
     const location = useLocation();
     const [transactionStatus, setTransactionStatus] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [customMessage, setCustomMessage] = useState(''); // Para mensajes pasados por la URL
+    const [customMessage, setCustomMessage] = useState('');
 
     useEffect(() => {
         const token_ws = new URLSearchParams(location.search).get('token_ws');
@@ -20,7 +20,7 @@ function PaymentFailurePage() {
         if (token_ws) {
             const fetchTransactionStatus = async () => {
                 try {
-                    // Llama al endpoint de tu backend para obtener el estado de la transacción
+
                     const response = await axios.get(`http://localhost:8080/api/payment/status/${token_ws}`);
                     setTransactionStatus(response.data);
                     setLoading(false);
@@ -56,7 +56,7 @@ function PaymentFailurePage() {
                     <p><strong>ID de Orden (Transbank):</strong> {transactionStatus.buyOrder}</p>
                     <p><strong>Código de Respuesta:</strong> {transactionStatus.responseCode}</p>
                     <p><strong>Estado:</strong> {transactionStatus.status}</p>
-                    {/* Puedes añadir más detalles según lo que devuelva tu API de estado */}
+                    {}
                 </div>
             )}
             <Link to="/" className="button-primary">Volver a Inicio</Link>

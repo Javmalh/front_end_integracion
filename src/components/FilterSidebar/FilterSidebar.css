@@ -27,16 +27,16 @@
 }
 
 .category-item {
-    margin-bottom: 10px; /* Reducido un poco para listas largas */
+    margin-bottom: 10px;
 }
 
 .category-name {
     font-weight: bold;
     color: #007bff;
     display: block;
-    margin-bottom: 5px; /* Reducido */
+    margin-bottom: 5px;
     cursor: pointer;
-    font-size: 1.05rem; /* Ligeramente más pequeño */
+    font-size: 1.05rem;
     transition: color 0.2s ease;
 }
 
@@ -86,7 +86,7 @@
     background-color: #d32f2f;
 }
 
-.error-message { /* Estilos para mensajes de error de carga de categorías */
+.error-message {
     color: #dc3545;
     text-align: center;
     font-weight: bold;

@@ -1,31 +1,24 @@
-/* src/components/Header/Header.css */
-
 .header {
-    /* Cambiamos a un color RGBA para introducir transparencia */
-    background-color: rgba(26, 26, 26, 0.85); /* Negro muy oscuro con 85% de opacidad */
-    color: #E0E0E0; /* Blanco roto para el texto principal */
+    background-color: rgba(26, 26, 26, 0.85);
+    color: #E0E0E0;
     padding: 15px 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Sombra un poco más pronunciada */
-
-    /* --- EFECTO BLUR AÑADIDO AQUÍ --- */
-    backdrop-filter: blur(8px); /* Aplica un desenfoque de 8px al contenido detrás del header */
-    -webkit-backdrop-filter: blur(8px); /* Prefijo para compatibilidad con navegadores WebKit (Chrome, Safari, Opera) */
-
-    /* Opcional: Si el header es 'fixed' o 'sticky', asegúrate de que el contenido pase por debajo */
-    position: sticky; /* O 'fixed' si quieres que siempre esté visible en la parte superior */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    position: sticky;
     top: 0;
-    z-index: 100; /* Asegura que esté por encima de otros elementos */
+    z-index: 100;
 }
 
-/* El resto de tu CSS permanece igual */
-
 .header-top {
-    max-width: 1200px;
+    max-width: 100%;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
+    padding-left: 20px;
+    padding-right: 10px;
+    gap: 15px;
 }
 
 .logo-section {
@@ -40,11 +33,11 @@
     vertical-align: middle;
 }
 
-/* Barra de búsqueda */
+
 .search-bar {
     display: flex;
     flex-grow: 1;
-    margin: 0 30px;
+    margin: 0;
     border-radius: 5px;
     overflow: hidden;
 }
@@ -93,25 +86,34 @@
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 0;
+    border-radius: 0 5px 5px 0;
     cursor: pointer;
     font-size: 1rem;
-    transition: background-color 0.3s ease;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
     box-sizing: border-box;
+    min-width: 80px;
 }
 
 .search-bar button[type="submit"]:hover {
     background-color: #00897B;
+    transform: translateY(-1px);
 }
 
-/* Navegación derecha */
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
 .main-nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
 }
 
 .main-nav ul li {
@@ -123,25 +125,20 @@
 }
 
 .header-button-base {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     background: transparent;
     color: inherit;
     border: none;
     margin: 0;
-    padding: 0;
+    padding: 10px 15px;
     font-family: inherit;
     font-size: 0.95rem;
+    font-weight: bold;
     line-height: 1;
     text-align: center;
     cursor: pointer;
     text-decoration: none;
-
-    padding: 10px 15px;
     border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
@@ -149,6 +146,7 @@
     box-sizing: border-box;
     height: auto;
     min-width: 110px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .header-button-base:hover {
@@ -180,6 +178,7 @@
 
 .logout-button:hover {
     background-color: #D50000;
+    color: white;
 }
 
 .cart-item-count {
@@ -199,80 +198,8 @@
     box-sizing: border-box;
 }
 
-.profile-dropdown-container {
-    position: relative;
-    margin-left: 0;
-    display: flex;
-    align-items: center;
-    padding-bottom: 0px;
-}
-
-.profile-dropdown-button {
-    /* Inherits from .header-button-base and .nav-button */
-}
-
-.profile-dropdown-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #1A1A1A;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    min-width: 160px;
-    z-index: 1000;
-    padding: 5px 0;
-    display: flex;
-    flex-direction: column;
-
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-    pointer-events: none;
-}
-
-.profile-dropdown-container:hover .profile-dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    pointer-events: auto;
-}
-
-.sucursales-dropdown-container {
-    position: relative;
-    margin-left: 0;
-    display: flex;
-    align-items: center;
-    padding-bottom: 0px;
-}
-
-.sucursales-dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #1A1A1A;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    min-width: 180px;
-    z-index: 1000;
-    padding: 5px 0;
-    display: flex;
-    flex-direction: column;
-
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-    pointer-events: none;
-}
-
-.sucursales-dropdown-container:hover .sucursales-dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    pointer-events: auto;
-}
-
+.profile-dropdown-container,
+.sucursales-dropdown-container,
 .management-dropdown-container {
     position: relative;
     margin-left: 0;
@@ -281,30 +208,28 @@
     padding-bottom: 0px;
 }
 
-.management-button {
-    /* Hereda de .header-button-base y .nav-button */
-}
-
+.profile-dropdown-menu,
+.sucursales-dropdown-menu,
 .management-dropdown-menu {
     position: absolute;
     top: 100%;
-    left: 0;
     background-color: #1A1A1A;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    min-width: 180px;
     z-index: 1000;
     padding: 5px 0;
     display: flex;
     flex-direction: column;
-
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
     pointer-events: none;
+    min-width: 160px;
 }
 
+.profile-dropdown-container:hover .profile-dropdown-menu,
+.sucursales-dropdown-container:hover .sucursales-dropdown-menu,
 .management-dropdown-container:hover .management-dropdown-menu {
     opacity: 1;
     visibility: visible;
@@ -345,33 +270,37 @@
 }
 
 
-/*Responsive adjustments */
 @media (max-width: 768px) {
     .header-top {
         flex-wrap: wrap;
         justify-content: center;
+        padding: 0 10px;
+        gap: 15px;
     }
-    .logo-section, .search-bar, .main-nav {
+
+    .logo-section {
+        padding-left: 0;
+    }
+
+    .logo-section,
+    .search-bar,
+    .main-nav {
         flex-basis: 100%;
         margin-bottom: 15px;
         justify-content: center;
     }
+
     .search-bar {
         order: 1;
-    }
-    .main-nav ul {
-        justify-content: center;
-        gap: 10px;
+        margin: 0;
     }
 
-    .profile-dropdown-container,
-    .sucursales-dropdown-container,
-    .management-dropdown-container {
-        flex-basis: 100%;
+    .main-nav ul {
         justify-content: center;
-        margin-left: 0;
-        padding-bottom: 0;
+        gap: 15px;
+        padding-right: 0;
     }
+
     .profile-dropdown-menu,
     .sucursales-dropdown-menu,
     .management-dropdown-menu {

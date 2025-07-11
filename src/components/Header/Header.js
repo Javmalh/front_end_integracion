@@ -1,10 +1,9 @@
-// src/main/js/src/components/Header/Header.js
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../../context/CartContext'; // Verifica esta ruta
+import { useCart } from '../../context/CartContext';
 import './Header.css';
 import logo from '../../assets/ferremax-logo.png';
+// sucursalesData se eliminará si se carga dinámicamente en el header o ya no se usa
 import sucursalesData from '../../data/sucursalesData';
 
 function Header({ isLoggedIn, userName, onLogout, userRole }) {
@@ -101,7 +100,6 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
 
                 <nav className="main-nav">
                     <ul>
-                        {/* Botón de Sucursales con Dropdown */}
                         <li
                             className="sucursales-dropdown-container"
                             onMouseEnter={() => setIsSucursalesDropdownOpen(true)}
@@ -128,9 +126,9 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
 
                         {isLoggedIn ? (
                             <>
-                                {userRole === 'WORKER' ? (
+                                {userRole === 'WORKER' || userRole === 'ADMIN' ? (
                                     <>
-                                        {/* Menú de Gestión para WORKER */}
+                                        {}
                                         <li
                                             className="management-dropdown-container"
                                             onMouseEnter={() => setIsManagementDropdownOpen(true)}
@@ -161,7 +159,7 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
                                     </>
                                 ) : (
                                     <>
-                                        {/* Botón de Carrito para usuarios NO WORKER (clientes) */}
+                                        {}
                                         <li>
                                             <Link to="/cart" className="header-button-base cart-button">
                                                 🛒 Carrito
@@ -173,21 +171,19 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
                                     </>
                                 )}
 
-                                {/* ESTE ES EL BLOQUE DEL PERFIL/CERRAR SESIÓN. SE MUESTRA PARA TODOS LOS LOGUEADOS. */}
-                                {/* Las opciones del desplegable variarán según el rol. */}
+                                {}
                                 <li className="profile-dropdown-container"
                                     onMouseEnter={() => setIsProfileDropdownOpen(true)}
                                     onMouseLeave={() => setIsProfileDropdownOpen(false)}
                                 >
                                     <button
-                                        onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
                                         className="header-button-base nav-button profile-dropdown-button"
                                     >
-                                        {userName || 'Perfil'} {/* Muestra el nombre de usuario */}
+                                        {userName || 'Perfil'}
                                     </button>
                                     {isProfileDropdownOpen && (
                                         <div className="profile-dropdown-menu">
-                                            {userRole !== 'WORKER' && ( // Solo muestra Mis Datos y Cuenta si NO es WORKER
+                                            {userRole !== 'WORKER' && userRole !== 'ADMIN' && (
                                                 <>
                                                     <Link
                                                         to="/profile"
@@ -205,7 +201,22 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
                                                     </Link>
                                                 </>
                                             )}
-                                            {/* El botón de Cerrar Sesión SIEMPRE aparece para usuarios logueados en este menú */}
+                                            <Link
+                                                to="/my-transactions"
+                                                className="dropdown-item"
+                                                onClick={closeProfileDropdown}
+                                            >
+                                                Mis Pagos
+                                            </Link>
+                                            {}
+                                            <Link
+                                                to="/my-orders"
+                                                className="dropdown-item"
+                                                onClick={closeProfileDropdown}
+                                            >
+                                                Mis Órdenes
+                                            </Link>
+                                            {}
                                             <button
                                                 onClick={handleLogout}
                                                 className="dropdown-item logout-dropdown-item"
@@ -218,7 +229,7 @@ function Header({ isLoggedIn, userName, onLogout, userRole }) {
                             </>
                         ) : (
                             <>
-                                {/* Opciones para usuarios no logueados */}
+                                {}
                                 <li>
                                     <Link to="/login" className="header-button-base nav-button">
                                         Iniciar Sesión

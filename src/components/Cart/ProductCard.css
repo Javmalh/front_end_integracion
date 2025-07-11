@@ -19,7 +19,7 @@
 .product-image {
     width: 100%;
     height: 180px;
-    object-fit: contain; /* o 'cover' si prefieres que la imagen llene el espacio */
+    object-fit: contain;
     border-radius: 5px;
     margin-bottom: 10px;
 }
@@ -46,8 +46,8 @@
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s ease;
-    width: 100%; /* Ocupa todo el ancho disponible */
-    box-sizing: border-box; /* Incluye padding y border en el ancho */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .add-to-cart-btn:hover {

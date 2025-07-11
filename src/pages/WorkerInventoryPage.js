@@ -3,20 +3,19 @@ import FilterSidebar from '../components/FilterSidebar/FilterSidebar';
 import api, { createProduct, updateProduct, deleteProduct, getProducts, getAllProductCategories } from '../services/api';
 import axios from 'axios';
 import './WorkerInventoryPage.css';
+import { toast } from 'react-toastify';
 
-// Componente Modal para Añadir/Editar Productos
+
 const ProductModal = ({ isOpen, onClose, product = null, onSubmit }) => {
-    // Estado local para los datos del formulario del modal
     const [formData, setFormData] = useState({
         nombre: product ? product.nombre : '',
         descripcion: product ? product.descripcion : '',
         precio: product ? product.precio : '',
         stock: product ? product.stock : '',
         categoria: product ? product.categoria : '',
-        imageUrl: product ? product.imageUrl : '', // Asegúrate de que imageUrl se inicialice correctamente
+        imageUrl: product ? product.imageUrl : '',
     });
 
-    // Actualiza el formData cuando el producto a editar cambie (ej. al abrir el modal para otro producto)
     useEffect(() => {
         console.log("ProductModal (useEffect): Ejecutado para producto:", product);
         setFormData({
@@ -27,16 +26,13 @@ const ProductModal = ({ isOpen, onClose, product = null, onSubmit }) => {
             categoria: product ? product.categoria : '',
             imageUrl: product ? product.imageUrl : '',
         });
-        // Depuración explícita del valor inicial de imageUrl en formData
         console.log("ProductModal (useEffect): formData inicializado. imageUrl:", product?.imageUrl || 'VALOR INICIAL NULO/VACÍO');
     }, [product]);
 
-    // Maneja cambios en los inputs del formulario
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => {
             const newState = { ...prev, [name]: value };
-            // Depuración de cada cambio en el input de imagen
             if (name === 'imageUrl') {
                 console.log(`ProductModal (handleChange): Campo 'imageUrl' cambiado a '${value}'.`);
             }
@@ -44,17 +40,14 @@ const ProductModal = ({ isOpen, onClose, product = null, onSubmit }) => {
         });
     };
 
-    // Maneja el envío del formulario del modal
     const handleSubmit = (e) => {
         console.log("ProductModal (handleSubmit): Botón 'submit' pulsado.");
-        e.preventDefault(); // Evita el comportamiento por defecto del formulario
-        // Depuración final del formData antes de enviarlo
+        e.preventDefault();
         console.log("ProductModal (handleSubmit): formData FINAL antes de onSubmit:", formData);
-        console.log("ProductModal (handleSubmit): Valor de imageUrl en formData:", formData.imageUrl); // ¡CRÍTICO! Observa este log
-        onSubmit(formData); // Llama a la función onSubmit pasada desde el padre
+        console.log("ProductModal (handleSubmit): Valor de imageUrl en formData:", formData.imageUrl);
+        onSubmit(formData);
     };
 
-    // Si el modal no está abierto, no renderiza nada
     if (!isOpen) return null;
 
     return (
@@ -96,44 +89,36 @@ const ProductModal = ({ isOpen, onClose, product = null, onSubmit }) => {
     );
 };
 
-// Componente principal: Página de Inventario del Trabajador
+
 function WorkerInventoryPage() {
-    // Estados para la carga de datos y errores
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Estados para filtros y búsqueda
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedFilters, setSelectedFilters] = useState([]); // Para categorías (desde FilterSidebar)
-    const [selectedSucursalId, setSelectedSucursalId] = useState(''); // Para filtro por sucursal
+    const [selectedFilters, setSelectedFilters] = useState([]);
+    const [selectedSucursalId, setSelectedSucursalId] = useState('');
 
-    // Estados para los datos mostrados
-    const [inventoryProducts, setInventoryProducts] = useState([]); // Productos del inventario
-    const [sucursales, setSucursales] = useState([]); // Lista de sucursales para el filtro
+    const [inventoryProducts, setInventoryProducts] = useState([]);
+    const [sucursales, setSucursales] = useState([]);
 
-    // Estados para el modal de añadir/editar producto
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToEdit, setProductToEdit] = useState(null);
 
-    // Callback para manejar cambios en los filtros de categoría desde FilterSidebar
     const handleCategoryFilterChange = useCallback((newFiltersArray) => {
         console.log("WorkerInventoryPage: Filtros de categoría actualizados:", newFiltersArray);
         setSelectedFilters(newFiltersArray);
     }, []);
 
-    // Callback para manejar el cambio de sucursal seleccionada
     const handleSucursalChange = useCallback((event) => {
-        console.log("WorkerInventoryPage: Sucursal seleccionada:", event.target.value);
         setSelectedSucursalId(event.target.value);
+        console.log("WorkerInventoryPage: Sucursal seleccionada:", event.target.value);
     }, []);
 
-    // Función para limpiar el término de búsqueda
     const handleClearSearch = () => {
         setSearchTerm('');
         console.log("WorkerInventoryPage: Término de búsqueda limpiado.");
     };
 
-    // Callback para cargar el inventario (productos)
     const fetchInventory = useCallback(async () => {
         console.log("WorkerInventoryPage: Iniciando carga de inventario...");
         setLoading(true);
@@ -141,8 +126,8 @@ function WorkerInventoryPage() {
         try {
             const params = {
                 searchTerm: searchTerm,
-                categories: selectedFilters.join(','), // Envía categorías como String separado por comas
-                sucursalId: selectedSucursalId || null // Envía null si no hay sucursal seleccionada
+                categories: selectedFilters.join(','),
+                sucursalId: selectedSucursalId || null
             };
             console.log("WorkerInventoryPage: Parámetros de búsqueda enviados a getProducts:", params);
             const response = await getProducts(params);
@@ -163,9 +148,8 @@ function WorkerInventoryPage() {
             setLoading(false);
             console.log("WorkerInventoryPage: Carga de inventario finalizada. Estado de carga:", false);
         }
-    }, [searchTerm, selectedFilters, selectedSucursalId]); // Dependencias para useCallback
+    }, [searchTerm, selectedFilters, selectedSucursalId]);
 
-    // useEffect para cargar las sucursales al inicio
     useEffect(() => {
         const fetchSucursales = async () => {
             console.log("WorkerInventoryPage: Cargando sucursales...");
@@ -183,15 +167,13 @@ function WorkerInventoryPage() {
             }
         };
         fetchSucursales();
-    }, []); // Se ejecuta solo una vez al montar
+    }, []);
 
-    // useEffect principal para cargar el inventario cuando cambian los filtros o el término de búsqueda
     useEffect(() => {
         console.log("WorkerInventoryPage: useEffect - Desencadenando fetchInventory.");
         fetchInventory();
-    }, [fetchInventory]); // Se ejecuta cuando fetchInventory (y sus dependencias) cambian
+    }, [fetchInventory]);
 
-    // Funciones para manejar el modal de añadir/editar
     const handleOpenAddModal = () => {
         setProductToEdit(null);
         setIsModalOpen(true);
@@ -212,22 +194,22 @@ function WorkerInventoryPage() {
 
     const handleAddOrUpdateProduct = async (productData) => {
         console.log("WorkerInventoryPage (handleAddOrUpdateProduct): INICIADO. Datos recibidos de modal:", productData);
-        console.log("WorkerInventoryPage (handleAddOrUpdateProduct): Valor de imageUrl en productData:", productData.imageUrl); // ¡CRÍTICO! Observa este log
+        console.log("WorkerInventoryPage (handleAddOrUpdateProduct): Valor de imageUrl en productData:", productData.imageUrl);
         try {
             if (productToEdit) {
                 await updateProduct(productToEdit.id, productData);
-                alert('Producto actualizado con éxito!');
+                toast.success('Producto actualizado con éxito!');
             } else {
                 await createProduct(productData);
-                alert('Producto añadido con éxito!');
+                toast.success('Producto añadido con éxito!');
             }
             handleCloseModal();
-            fetchInventory(); // Recarga el inventario después de guardar/actualizar
+            fetchInventory();
             console.log("WorkerInventoryPage (handleAddOrUpdateProduct): Producto guardado/actualizado con éxito.");
         } catch (err) {
             console.error('WorkerInventoryPage: ERROR al guardar producto:', err);
             setError(err.response?.data?.message || 'Error al guardar el producto.');
-            alert('Error al guardar el producto: ' + (err.response?.data?.message || err.message));
+            toast.error('Error al guardar el producto: ' + (err.response?.data?.message || err.message));
         }
     };
 
@@ -236,12 +218,12 @@ function WorkerInventoryPage() {
         if (window.confirm(`¿Estás seguro de que quieres eliminar el producto con ID: ${productId}?`)) {
             try {
                 await deleteProduct(productId);
-                alert('Producto eliminado con éxito!');
+                toast.success('Producto eliminado con éxito!');
                 fetchInventory();
             } catch (err) {
                 console.error('WorkerInventoryPage: Error al eliminar producto:', err);
                 setError(err.response?.data?.message || 'Error al eliminar el producto.');
-                alert('Error al eliminar el producto: ' + (err.response?.data?.message || err.message));
+                toast.error('Error al eliminar el producto: ' + (err.response?.data?.message || err.message));
             }
         }
     };
@@ -257,14 +239,14 @@ function WorkerInventoryPage() {
                     <div className="search-input-container">
                         <input
                             type="text"
-                            placeholder="Buscar productos por nombre o descripción..."
+                            placeholder="Buscar productos por nombre o ID..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="search-input"
                         />
                         {searchTerm && (
                             <button onClick={handleClearSearch} className="clear-worker-search-button">
-                                &times;
+                                &#x2715;
                             </button>
                         )}
                     </div>
@@ -302,11 +284,9 @@ function WorkerInventoryPage() {
                                 <td>{product.stock}</td>
                                 <td>{product.categoria}</td>
                                 <td>
-                                    {/* Muestra la imagen si imageUrl existe, de lo contrario un placeholder o nada */}
                                     {product.imageUrl ? (
                                         <img src={product.imageUrl} alt={product.nombre} style={{ width: '50px', height: '50px', objectFit: 'cover' }} />
                                     ) : (
-                                        // Opcional: mostrar un placeholder si no hay imagen
                                         <img src="https://via.placeholder.com/50?text=No+Img" alt="Sin Imagen" style={{ width: '50px', height: '50px', objectFit: 'cover' }} />
                                     )}
                                 </td>

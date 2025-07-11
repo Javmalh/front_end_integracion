@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext, useCallback, useMemo } from 'react'; // Asegúrate de importar useMemo
+import React, { createContext, useState, useEffect, useContext, useCallback, useMemo } from 'react';
 
 const CartContext = createContext(undefined);
 
@@ -32,15 +32,15 @@ export function CartProvider({ children }) {
         }
     }, [cart]);
 
-    const addItem = useCallback((product, sucursal, quantity = 1) => {
+    const addItem = useCallback((product, sucursal, quantityToAdd = 1) => {
         setCart(prevCart => {
             if (!product || !product.id || !sucursal || !sucursal.id) {
                 console.error("CartContext: addItem - Producto o Sucursal no tienen ID o son indefinidos.", { product, sucursal });
                 return prevCart;
             }
-            if (typeof quantity !== 'number' || quantity < 1) {
-                console.warn("CartContext: addItem - Cantidad inválida, ajustando a 1.", quantity);
-                quantity = 1;
+            if (typeof quantityToAdd !== 'number' || quantityToAdd < 1) {
+                console.warn("CartContext: addItem - Cantidad a añadir inválida, ajustando a 1.", quantityToAdd);
+                quantityToAdd = 1;
             }
 
             const existingItemIndex = prevCart.items.findIndex(
@@ -49,8 +49,8 @@ export function CartProvider({ children }) {
 
             if (existingItemIndex > -1) {
                 const updatedItems = [...prevCart.items];
-                updatedItems[existingItemIndex].quantity += quantity;
-                console.log(`CartContext: Cantidad de ${product.nombre} actualizada a ${updatedItems[existingItemIndex].quantity}`);
+                updatedItems[existingItemIndex].quantity += quantityToAdd;
+                console.log(`Carrito: Cantidad de ${product.nombre} actualizada a ${updatedItems[existingItemIndex].quantity}`);
                 return { ...prevCart, items: updatedItems };
             } else {
                 const newItem = {
@@ -58,9 +58,9 @@ export function CartProvider({ children }) {
                     product: product,
                     branchId: sucursal.id,
                     sucursal: sucursal,
-                    quantity: quantity,
+                    quantity: quantityToAdd,
                 };
-                console.log(`CartContext: ${product.nombre} añadido. Cantidad: ${quantity}`);
+                console.log(`Carrito: ${product.nombre} añadido como nuevo ítem. Cantidad: ${quantityToAdd}`);
                 return { ...prevCart, items: [...prevCart.items, newItem] };
             }
         });
@@ -72,7 +72,7 @@ export function CartProvider({ children }) {
             const updatedItems = prevCart.items.filter(
                 (item) => !(item.product.id === productId && item.sucursal.id === sucursalId)
             );
-            console.log(`CartContext: Producto ID ${productId} de Sucursal ID ${sucursalId} eliminado.`);
+            console.log(`Carrito: Producto ID ${productId} de Sucursal ID ${sucursalId} eliminado.`);
             return { ...prevCart, items: updatedItems };
         });
     }, []);
@@ -85,14 +85,14 @@ export function CartProvider({ children }) {
                     ? { ...item, quantity: quantityToSet }
                     : item
             );
-            console.log(`CartContext: Cantidad de producto ID ${productId} en Sucursal ID ${sucursalId} actualizada a ${quantityToSet}`);
+            console.log(`Carrito: Cantidad de producto ID ${productId} en Sucursal ID ${sucursalId} actualizada a ${quantityToSet}`);
             return { ...prevCart, items: updatedItems };
         });
     }, []);
 
     const clearCart = useCallback(() => {
         setCart({ items: [] });
-        console.log("CartContext: Carrito vaciado.");
+        console.log("Carrito vaciado.");
     }, []);
 
     const getTotalItems = useCallback(() => {
@@ -115,7 +115,7 @@ export function CartProvider({ children }) {
         return { subtotal: calculatedSubtotal, total: calculatedSubtotal };
     }, [cart.items]);
 
-    const contextValue = useMemo(() => ({ // Usamos useMemo importado
+    const contextValue = useMemo(() => ({ // <-- useMemo importado y usado correctamente
         cart,
         addItem,
         removeItem,

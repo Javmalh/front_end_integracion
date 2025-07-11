@@ -1,0 +1,78 @@
+
+
+.static-content-page-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.static-content-title {
+    font-size: 2.5rem;
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+}
+
+.static-content-text h3 {
+    font-size: 1.6rem;
+    color: #555;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.static-content-text p {
+    margin-bottom: 15px;
+}
+
+.static-content-text ul {
+    margin-bottom: 15px;
+    padding-left: 25px;
+}
+
+.static-content-text ul li {
+    margin-bottom: 8px;
+    list-style-type: disc;
+}
+
+.static-content-text strong {
+    color: #000;
+}
+
+.static-content-back-button {
+    display: inline-block;
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 30px;
+    transition: background-color 0.3s ease;
+}
+
+.static-content-back-button:hover {
+    background-color: #5a6268;
+}
+
+
+@media (max-width: 768px) {
+    .static-content-page-container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+    .static-content-title {
+        font-size: 2rem;
+    }
+    .static-content-text h3 {
+        font-size: 1.4rem;
+    }
+}

@@ -1,10 +1,10 @@
 // src/main/js/src/components/Cart/CartContext.js
 
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
-import api from '../../services/api'; // <<< ¡IMPORTAR LA INSTANCIA 'api' CONFIGURADA!
+import api from '../../services/api';
 const CartContext = createContext();
 
-export const useCart = () => useContext(CartContext); // <--- ¡ESTA ES LA LÍNEA MARCADA!
+export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([]);

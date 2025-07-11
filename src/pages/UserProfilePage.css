@@ -1,15 +1,10 @@
-/* src/pages/UserProfilePage.css */
+
 
 .user-profile-container {
     display: flex;
     justify-content: center;
-    /* align-items: center;  -> Cambiado a flex-start para que el contenido empiece desde arriba y no se centre verticalmente */
     align-items: flex-start;
-
-    /* Si el header y footer se ocultan en esta página, 100vh es correcto.
-       Si se muestran (como sugiere tu App.js), deberías ajustar para descontar su altura.
-       Mantengo 100vh según tu comentario, asumiendo que el layout lo justifica. */
-    min-height: 100vh;
+    min-height: calc(100vh - 100px);
     background-color: #f0f2f5;
     padding: 20px;
     box-sizing: border-box;
@@ -21,7 +16,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 600px; /* Ancho máximo para la tarjeta de perfil */
+    max-width: 600px;
     text-align: center;
 }
 
@@ -31,24 +26,17 @@
     font-size: 32px;
 }
 
-.user-profile-card p {
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 15px;
-}
-
-/* El mensaje de bienvenida no tiene una clase específica en tu CSS, pero podrías añadirla si quieres estilos únicos. */
-/* .welcome-message {
+.user-profile-card .welcome-message {
     font-style: italic;
     color: #777;
-} */
-
+    margin-bottom: 25px;
+}
 
 .profile-details {
     margin-top: 30px;
     border-top: 1px solid #eee;
     padding-top: 20px;
-    text-align: left; /* Alinea el texto a la izquierda dentro de esta sección */
+    text-align: left;
 }
 
 .profile-details h3 {
@@ -59,18 +47,24 @@
 
 .profile-details p {
     margin-bottom: 10px;
+    font-size: 1rem;
+    line-height: 1.5;
+    display: flex;
+    justify-content: space-between;
 }
 
-.profile-details strong {
+.profile-details p strong {
     color: #333;
-    /* Considera usar display: inline-block y min-width para alinear las etiquetas si es necesario */
+    min-width: 150px;
+    flex-shrink: 0;
+    margin-right: 10px;
 }
 
 .profile-actions {
     margin-top: 30px;
     border-top: 1px solid #eee;
     padding-top: 20px;
-    text-align: left; /* Alinea el texto a la izquierda dentro de esta sección */
+    text-align: left;
 }
 
 .profile-actions h3 {
@@ -89,41 +83,43 @@
     margin-bottom: 10px;
 }
 
-.profile-actions a {
-    color: #007bff;
+.profile-actions .profile-action-link,
+.profile-page-container .login-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
     text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-.profile-actions a:hover {
-    color: #0056b3;
-    text-decoration: underline;
-}
-
-/* Estilo para el botón "Volver a Inicio" */
-.back-to-home-link { /* Esta clase es para el contenedor del enlace */
-    margin-top: 20px;
-    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    width: auto;
     text-align: center;
 }
 
-.back-to-home-link .back-button { /* Esta clase es para el elemento Link/Button dentro del contenedor */
-    display: inline-block;
-    padding: 8px 15px;
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
+.profile-actions .profile-action-link:hover,
+.profile-page-container .login-button:hover {
+    background-color: #0056b3;
 }
 
-.back-to-home-link .back-button:hover {
-    background-color: #5a6268;
+.loading-message, .error-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.1rem;
+    color: #555;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
 }
 
-/* Media Queries para Responsive Design (opcional, pero buena práctica) */
+.error-message {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+
 @media (max-width: 768px) {
     .user-profile-card {
         padding: 30px 20px;
@@ -134,5 +130,23 @@
     .profile-details h3,
     .profile-actions h3 {
         font-size: 20px;
+    }
+    .profile-details p {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .profile-details p strong {
+        min-width: unset;
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    .profile-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    .profile-actions .profile-action-link,
+    .profile-page-container .login-button {
+        width: 100%;
+        max-width: 250px;
     }
 }

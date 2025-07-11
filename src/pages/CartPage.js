@@ -52,11 +52,11 @@ function CartPage() {
         setCheckoutError(null);
 
         try {
-            // --- ¡DEPURACIÓN ADICIONAL AQUÍ! ---
+
             console.log("CartPage (handleCheckout): Verificando total antes de enviar al backend.");
             console.log("CartPage (handleCheckout): Resultado de getTotalPrice():", getTotalPrice());
             console.log("CartPage (handleCheckout): Valor de getTotalPrice().total:", getTotalPrice().total);
-            // ------------------------------------
+
 
             const API_BASE_URL = 'http://localhost:8080/api';
             const jwtToken = localStorage.getItem('jwtToken');
@@ -138,10 +138,10 @@ function CartPage() {
                         </button>
                     )}
                 </div>
-                {/* --- ¡LA MODIFICACIÓN CLAVE ESTÁ AQUÍ! --- */}
-                {/* Pasa la propiedad 'total' del objeto retornado por getTotalPrice() */}
+                {}
+                {}
                 <CartSummary total={getTotalPrice().total} />
-                {/* --- FIN DE LA MODIFICACIÓN --- */}
+                {}
             </div>
             <div className="cart-actions">
                 <Link to="/" className="continue-shopping-btn">
